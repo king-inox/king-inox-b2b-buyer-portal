@@ -124,14 +124,12 @@ export default function ConvertToOrderDialog({
                     </Alert>
                   </>
                 )}
-                <Typography>
-                  {b3Lang('quoteDetail.conversion.shippingTerms')}:{' '}
-                  {b3Lang(
-                    freeShipping
-                      ? 'quoteDetail.conversion.prepaid'
-                      : 'quoteDetail.conversion.assigned',
-                  )}
-                </Typography>
+                {!freeShipping && (
+                  <Typography>
+                    {b3Lang('quoteDetail.conversion.shippingTerms')}:{' '}
+                    {b3Lang('quoteDetail.conversion.assigned')}
+                  </Typography>
+                )}
               </>
             )}
           </Stack>
