@@ -161,7 +161,7 @@
   "global.customStyles.masqueradeButton": "END MASQUERADE",
   "global.customStyles.addQuoteBtn": "Add to quote",
   "global.customStyles.floatingAction": "Finish quote",
-  "global.customStyles.addToAllQuoteBtn": "Create quote",
+  "global.customStyles.addToAllQuoteBtn": "Manage quote",
   "global.customStyles.shoppingListBtn": "Add to Shopping List",
   "global.masquerade.youAreMasqueradeAs": "You are masquerade as",
   "global.companyHierarchy.externalBtn": "You are representing",

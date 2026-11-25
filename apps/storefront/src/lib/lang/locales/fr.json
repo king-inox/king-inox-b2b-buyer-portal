@@ -140,7 +140,7 @@
   "global.customStyles.masqueradeButton": "TERMINER LA CONNEXION PAR PROCURATION",
   "global.customStyles.addQuoteBtn": "Ajouter au devis",
   "global.customStyles.floatingAction": "Finaliser le devis",
-  "global.customStyles.addToAllQuoteBtn": "Créer un devis",
+  "global.customStyles.addToAllQuoteBtn": "Gérer le devis",
   "global.customStyles.shoppingListBtn": "Ajouter à la liste d’achat",
   "global.masquerade.youAreMasqueradeAs": "Vous êtes connecté par procuration en tant que",
   "global.companyHierarchy.externalBtn": "Vous représentez",
