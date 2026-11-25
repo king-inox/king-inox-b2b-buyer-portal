@@ -401,8 +401,7 @@ describe('when the user is a B2B customer', () => {
     await waitFor(() => expect(convert).toBeEnabled());
     await user.click(convert);
     expect(checkout).not.toHaveBeenCalled();
-    await user.click(await screen.findByRole('combobox', { name: /Shipping terms/ }));
-    await user.click(screen.getByRole('option', { name: 'Freight collect' }));
+    await screen.findByText('Shipping terms: Ex Works');
     const confirm = screen.getByRole('button', { name: 'Continue converting to order' });
     if (mode === 'not-open' || mode === 'missing-token') await user.click(confirm);
     else await user.dblClick(confirm);

@@ -649,8 +649,7 @@ it.each([
       await screen.findByText('Threshold reached: free shipping will be applied.');
       expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
     } else {
-      await userEvent.click(await screen.findByRole('combobox', { name: /Shipping terms/ }));
-      await userEvent.click(screen.getByRole('option', { name: 'Freight collect' }));
+      await screen.findByText('Shipping terms: Ex Works');
     }
     await userEvent.dblClick(screen.getByRole('button', { name: 'Continue converting to order' }));
   }

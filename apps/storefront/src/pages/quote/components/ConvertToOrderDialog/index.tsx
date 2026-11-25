@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useIntl } from 'react-intl';
 import {
   Alert,
@@ -8,11 +8,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControl,
-  InputLabel,
   LinearProgress,
-  MenuItem,
-  Select,
   Stack,
   Typography,
 } from '@mui/material';
@@ -46,7 +42,6 @@ export default function ConvertToOrderDialog({
   const portalContainer = () => portalAnchor.current?.ownerDocument.body ?? null;
   const b3Lang = useB3Lang();
   const { locale } = useIntl();
-  const [selection, setSelection] = useState<QuoteShippingTerms | ''>('');
   const { data, isFetching, isError, refetch } = useQuery({
     queryKey: ['quote-conversion-shipping', companyId, address],
     queryFn: () => loadQuoteShippingTerms(companyId, address),
@@ -57,7 +52,7 @@ export default function ConvertToOrderDialog({
   const qualifyingCents = Math.round(total * 100) + Math.round((data?.ordersTotal ?? 0) * 100);
   const thresholdCents = data?.threshold == null ? null : Math.round(data.threshold * 100);
   const freeShipping = thresholdCents !== null && qualifyingCents >= thresholdCents;
-  const terms = freeShipping ? 'porto_franco' : selection;
+  const terms: QuoteShippingTerms = freeShipping ? 'porto_franco' : 'porto_assegnato';
   const ready = !!data && !isFetching && !isError && validTotal;
   const money = (amount: number) =>
     new Intl.NumberFormat(locale, { style: 'currency', currency: currencyCode || 'EUR' }).format(
@@ -113,6 +108,11 @@ export default function ConvertToOrderDialog({
                     <Typography>
                       {b3Lang('quoteDetail.conversion.orders', { amount: money(data.ordersTotal) })}
                     </Typography>
+                    {freeShipping && (
+                      <Typography color="text.secondary">
+                        {b3Lang('quoteDetail.conversion.sameDestination')}
+                      </Typography>
+                    )}
                     <Alert severity={freeShipping ? 'success' : 'info'}>
                       {freeShipping
                         ? b3Lang('quoteDetail.conversion.freeShipping')
@@ -124,33 +124,14 @@ export default function ConvertToOrderDialog({
                     </Alert>
                   </>
                 )}
-                {!freeShipping && (
-                  <FormControl fullWidth required disabled={busy}>
-                    <InputLabel id="quote-shipping-terms-label">
-                      {b3Lang('quoteDetail.conversion.shippingTerms')}
-                    </InputLabel>
-                    <Select
-                      MenuProps={{ container: portalContainer }}
-                      labelId="quote-shipping-terms-label"
-                      label={b3Lang('quoteDetail.conversion.shippingTerms')}
-                      value={selection}
-                      onChange={({ target }) => {
-                        if (
-                          target.value === 'porto_assegnato' ||
-                          target.value === 'porto_franco_con_addebito'
-                        )
-                          setSelection(target.value);
-                      }}
-                    >
-                      <MenuItem value="porto_assegnato">
-                        {b3Lang('quoteDetail.conversion.assigned')}
-                      </MenuItem>
-                      <MenuItem value="porto_franco_con_addebito">
-                        {b3Lang('quoteDetail.conversion.charged')}
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
-                )}
+                <Typography>
+                  {b3Lang('quoteDetail.conversion.shippingTerms')}:{' '}
+                  {b3Lang(
+                    freeShipping
+                      ? 'quoteDetail.conversion.prepaid'
+                      : 'quoteDetail.conversion.assigned',
+                  )}
+                </Typography>
               </>
             )}
           </Stack>
@@ -161,9 +142,9 @@ export default function ConvertToOrderDialog({
           </Button>
           <Button
             variant="contained"
-            disabled={!ready || !terms || busy}
+            disabled={!ready || busy}
             onClick={() => {
-              if (ready && terms && !busy) onConfirm(terms);
+              if (ready && !busy) onConfirm(terms);
             }}
           >
             {b3Lang('quoteDetail.conversion.continue')}

@@ -44,7 +44,10 @@ const buildScenarioWith = builder(() => ({
 let scenario: ReturnType<typeof buildScenarioWith>;
 let convert: ReturnType<typeof vi.fn<ComponentProps<typeof ConvertToOrderDialog>['onConfirm']>>;
 
-function renderDialog(overrides: Partial<ComponentProps<typeof ConvertToOrderDialog>> = {}) {
+function renderDialog(
+  overrides: Partial<ComponentProps<typeof ConvertToOrderDialog>> = {},
+  locale = 'en',
+) {
   return renderWithProviders(
     <ConvertToOrderDialog
       companyId={scenario.companyId}
@@ -55,6 +58,7 @@ function renderDialog(overrides: Partial<ComponentProps<typeof ConvertToOrderDia
       onClose={overrides.onClose ?? vi.fn()}
       onConfirm={convert}
     />,
+    { initialGlobalContext: { bcLanguage: locale } },
   );
 }
 
@@ -94,25 +98,17 @@ beforeEach(() => {
   );
 });
 
-it('requires an explicit choice below the threshold and only converts after confirmation', async () => {
+it('automatically applies Ex Works below the threshold and only converts after confirmation', async () => {
   const user = userEvent.setup();
   renderDialog();
   const confirm = screen.getByRole('button', { name: 'Continue converting to order' });
   expect(confirm).toBeDisabled();
-  await user.click(await screen.findByRole('combobox', { name: /Shipping terms/ }));
+  await screen.findByText('Shipping terms: Ex Works');
+  expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+  expect(screen.queryByText(/Free delivery is guaranteed/)).not.toBeInTheDocument();
   expect(convert).not.toHaveBeenCalled();
-  await user.click(screen.getByRole('option', { name: 'Freight collect' }));
   await user.click(confirm);
   expect(convert).toHaveBeenCalledExactlyOnceWith('porto_assegnato');
-});
-
-it('allows prepaid freight charged to the customer', async () => {
-  const user = userEvent.setup();
-  renderDialog();
-  await user.click(await screen.findByRole('combobox', { name: /Shipping terms/ }));
-  await user.click(screen.getByRole('option', { name: 'Prepaid freight charged to customer' }));
-  await user.click(screen.getByRole('button', { name: 'Continue converting to order' }));
-  expect(convert).toHaveBeenCalledExactlyOnceWith('porto_franco_con_addebito');
 });
 
 it.each(['equal', 'above'])(
@@ -123,13 +119,20 @@ it.each(['equal', 'above'])(
     renderDialog();
     await screen.findByText('Threshold reached: free shipping will be applied.');
     expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+    expect(screen.getByText('Shipping terms: Free Delivery')).toBeVisible();
+    expect(
+      screen.getByText(
+        'Free delivery is guaranteed only if the orders are shipped to this same destination.',
+      ),
+    ).toBeVisible();
     expect(convert).not.toHaveBeenCalled();
     await user.click(screen.getByRole('button', { name: 'Continue converting to order' }));
     expect(convert).toHaveBeenCalledExactlyOnceWith('porto_franco');
   },
 );
 
-it('offers transport choices when the address has no free shipping threshold', async () => {
+it('automatically applies Ex Works when the address has no free shipping threshold', async () => {
+  scenario.total = scenario.threshold * 2;
   server.use(
     graphql.query('QuoteConversionAddresses', () =>
       HttpResponse.json({
@@ -142,10 +145,31 @@ it('offers transport choices when the address has no free shipping threshold', a
       }),
     ),
   );
+  const user = userEvent.setup();
   renderDialog();
-  await screen.findByRole('combobox', { name: /Shipping terms/ });
-  expect(screen.getByRole('button', { name: 'Continue converting to order' })).toBeDisabled();
+  await screen.findByText('Shipping terms: Ex Works');
+  expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+  expect(screen.queryByText(/Free delivery is guaranteed/)).not.toBeInTheDocument();
+  await user.click(screen.getByRole('button', { name: 'Continue converting to order' }));
+  expect(convert).toHaveBeenCalledExactlyOnceWith('porto_assegnato');
 });
+
+it.each(['it', 'en', 'de', 'es', 'fr', 'nl', 'zh'])(
+  'displays automatic free shipping terms in %s',
+  async (locale) => {
+    scenario.threshold = 0;
+    renderDialog({}, locale);
+    const label = locale === 'it' ? 'Porto Franco' : 'Free Delivery';
+    expect(await screen.findByText(new RegExp(`: ${label}$`))).toBeVisible();
+    expect(
+      screen.getByText(
+        locale === 'it'
+          ? 'Il porto franco ti sarà garantito se gli ordini sono destinati a questa stessa destinazione.'
+          : 'Free delivery is guaranteed only if the orders are shipped to this same destination.',
+      ),
+    ).toBeVisible();
+  },
+);
 
 it('blocks conversion on an order lookup error and allows retry', async () => {
   server.use(
@@ -157,7 +181,7 @@ it('blocks conversion on an order lookup error and allows retry', async () => {
   expect(screen.getByRole('button', { name: 'Continue converting to order' })).toBeDisabled();
   server.use(http.get('*/api/v1/bigcommerce/order-status', () => HttpResponse.json({ data: [] })));
   await user.click(screen.getByRole('button', { name: 'Retry' }));
-  await screen.findByRole('combobox', { name: /Shipping terms/ });
+  await screen.findByText('Shipping terms: Ex Works');
   expect(convert).not.toHaveBeenCalled();
 });
 
@@ -183,7 +207,7 @@ it('cancels without converting', async () => {
   const onClose = vi.fn();
   const user = userEvent.setup();
   renderDialog({ onClose });
-  await screen.findByRole('combobox');
+  await screen.findByText('Shipping terms: Ex Works');
   await user.click(screen.getByRole('button', { name: 'Cancel' }));
   expect(onClose).toHaveBeenCalledOnce();
   expect(convert).not.toHaveBeenCalled();
@@ -255,7 +279,7 @@ it('finds shipping terms on a later address page', async () => {
     ),
   );
   renderDialog();
-  await screen.findByRole('combobox', { name: /Shipping terms/ });
+  await screen.findByText('Shipping terms: Ex Works');
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 });
 
@@ -270,7 +294,7 @@ it('blocks confirmation when an order contains an invalid shipping amount', asyn
   expect(screen.getByRole('button', { name: 'Continue converting to order' })).toBeDisabled();
 });
 
-it('opens the confirmation and transport menu inside the buyer portal iframe', async () => {
+it('shows the confirmation and automatic shipping terms inside the buyer portal iframe', async () => {
   const frame = document.createElement('iframe');
   document.body.appendChild(frame);
   const frameDocument = frame.contentDocument;
@@ -296,10 +320,8 @@ it('opens the confirmation and transport menu inside the buyer portal iframe', a
     expect(dialog).toBeVisible();
     expect(dialog.ownerDocument).toBe(frameDocument);
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    await user.click(await portalScreen.findByRole('combobox', { name: /Shipping terms/ }));
-    const option = await portalScreen.findByRole('option', { name: 'Freight collect' });
-    expect(option.ownerDocument).toBe(frameDocument);
-    await user.click(option);
+    const terms = await portalScreen.findByText('Shipping terms: Ex Works');
+    expect(terms.ownerDocument).toBe(frameDocument);
     await user.click(portalScreen.getByRole('button', { name: 'Continue converting to order' }));
     expect(convert).toHaveBeenCalledExactlyOnceWith('porto_assegnato');
   } finally {

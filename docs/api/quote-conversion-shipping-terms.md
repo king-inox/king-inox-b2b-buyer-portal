@@ -19,8 +19,7 @@ Autenticazione invariata: `Authorization: Bearer <current customer JWT>`.
 | Valore | Condizione di trasporto | Codice ERP |
 | --- | --- | --- |
 | `porto_franco` | Soglia raggiunta | `PF` |
-| `porto_assegnato` | Scelta del cliente | `PA` |
-| `porto_franco_con_addebito` | Scelta del cliente | `PFA` |
+| `porto_assegnato` | Ex Works: soglia assente o non raggiunta | `PA` |
 
 La proprietà resta opzionale nel client condiviso per compatibilità. Entrambi i percorsi del portale la valorizzano sempre: `/quoteDetail/:id` e `/quoteDraft`. Condividono il layout `QuotePage`, ma hanno handler di conversione distinti. La lista preventivi indirizza lo stato 0 a `/quoteDraft`. Nella bozza, il clic apre la modale senza creare preventivi o ordini; solo la conferma avvia la creazione del preventivo e la successiva conversione. Annullando non viene eseguita nessuna scrittura.
 
@@ -32,8 +31,8 @@ Il componente `pages/quote/components/QuoteActions` definisce una sola volta i p
 2. Legge `SOGLIA PORTOFRANCO` e `DESCRIZIONE PORTO`, normalizzando il nome con trim e maiuscole come lo storefront. Accetta importi con virgola/punto e separatori delle migliaia come il carrello del tema.
 3. Se c’è una soglia numerica, recupera `GET /api/v1/bigcommerce/order-status` con JWT e somma `data[].amount_shipped_next_7_days`, ignorando i valori null.
 4. Confronta il totale del preventivo (`totalAmount`) più la somma degli ordini con la soglia. Il calcolo è in centesimi. La soglia esatta è inclusa.
-5. A soglia raggiunta imposta `porto_franco`; altrimenti richiede la selezione esplicita tra `porto_assegnato` e `porto_franco_con_addebito`. Non preseleziona un valore.
-6. Indirizzo non disponibile, errori di lettura o importi degli ordini non validi impediscono la conferma. “Riprova” ripete la verifica. Chiudendo e riaprendo la modale si aggiorna la verifica e si azzera la scelta.
+5. A soglia raggiunta mostra “Porto Franco” in italiano e “Free Delivery” nelle altre lingue e imposta `porto_franco`. Sotto l’importo degli ordini mostra che il porto franco è garantito se gli ordini sono destinati alla stessa destinazione. Con soglia assente o non raggiunta mostra “Ex Works” e imposta `porto_assegnato`. Non è prevista una selezione manuale.
+6. Indirizzo non disponibile, errori di lettura o importi degli ordini non validi impediscono la conferma. “Riprova” ripete la verifica. Chiudendo e riaprendo la modale si aggiorna la verifica.
 
 Fonte: branch `dev` di [king-inox-bc-theme](https://github.com/DMA-digital-for-business/king-inox-bc-theme/tree/dev), file `assets/js/theme/cart/shipping-estimator.js`, `cart/cart-primary-actions.js`, `common/b2b-gateway.js` e `common/order-status-gateway.js`.
 
