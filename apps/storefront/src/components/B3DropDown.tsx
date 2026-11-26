@@ -1,4 +1,4 @@
-import { forwardRef, Ref, useImperativeHandle, useRef, useState, type JSX } from 'react';
+import { forwardRef, type JSX, ReactNode, Ref, useImperativeHandle, useRef, useState } from 'react';
 import {
   ArrowDropDown as ArrowDropDownIcon,
   ArrowDropUp as ArrowDropUpIcon,
@@ -24,7 +24,7 @@ export interface DropDownHandle {
 interface B3DropDownProps extends Partial<MenuProps> {
   width?: string;
   list: Array<ListItemProps>;
-  title: string;
+  title: ReactNode;
   handleItemClick?: (key: string | number) => void;
   value?: string;
   menuRenderItemName?: (item: ListItemProps) => JSX.Element | string;

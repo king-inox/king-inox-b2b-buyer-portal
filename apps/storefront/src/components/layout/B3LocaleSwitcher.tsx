@@ -1,8 +1,51 @@
+import { Box } from '@mui/material';
+
 import { useFeatureFlag } from '@/hooks/useFeatureFlag';
 import { useAppSelector } from '@/store';
 import { Locales } from '@/store/slices/global';
 
-import B3DropDown from '../B3DropDown';
+import B3DropDown, { ListItemProps } from '../B3DropDown';
+
+const LANGUAGE_FLAGS: Record<string, string> = {
+  ar: '🇸🇦',
+  cs: '🇨🇿',
+  da: '🇩🇰',
+  de: '🇩🇪',
+  el: '🇬🇷',
+  en: '🇬🇧',
+  es: '🇪🇸',
+  fi: '🇫🇮',
+  fr: '🇫🇷',
+  hr: '🇭🇷',
+  hu: '🇭🇺',
+  it: '🇮🇹',
+  nl: '🇳🇱',
+  pl: '🇵🇱',
+  pt: '🇵🇹',
+  ro: '🇷🇴',
+  ru: '🇷🇺',
+  sl: '🇸🇮',
+  sq: '🇦🇱',
+  sv: '🇸🇪',
+  tr: '🇹🇷',
+  uk: '🇺🇦',
+  zh: '🇨🇳',
+};
+
+function LanguageLabel({ code }: { code: string }) {
+  const language = code.toLowerCase().split('-')[0];
+  const flag = LANGUAGE_FLAGS[language];
+  if (!flag) throw new Error(`Unsupported language flag: ${code}`);
+
+  return (
+    <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
+      <span aria-hidden="true">{flag}</span>
+      {code.toUpperCase()}
+    </Box>
+  );
+}
+
+const renderLanguageMenuItem = (item: ListItemProps) => <LanguageLabel code={String(item.key)} />;
 
 const getActiveLocale = (locales: Locales) =>
   [...locales]
@@ -56,8 +99,9 @@ export default function B3LocaleSwitcher() {
 
   return (
     <B3DropDown
-      title={activeLocale.code.toUpperCase()}
+      title={<LanguageLabel code={activeLocale.code} />}
       list={list}
+      menuRenderItemName={renderLanguageMenuItem}
       value={activeLocale.code}
       handleItemClick={handleLocaleChange}
     />
