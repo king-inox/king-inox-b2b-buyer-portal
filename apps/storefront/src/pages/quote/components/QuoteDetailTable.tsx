@@ -3,8 +3,8 @@ import { useIntl } from 'react-intl';
 import { Alert, Box, FormControlLabel, styled, Switch, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 
-import BackorderMessage from '@/components/BackorderMessage';
 import { ProductImage } from '@/components/B3ProductList';
+import BackorderMessage from '@/components/BackorderMessage';
 import { B3PaginationTable, GetRequestList } from '@/components/table/B3PaginationTable';
 import { TableColumnItem } from '@/components/table/B3Table';
 import { useBackorderStorefrontMessaging } from '@/hooks/useBackorderStorefrontMessaging';

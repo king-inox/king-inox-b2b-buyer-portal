@@ -1,7 +1,7 @@
 import { Box, CardContent, Typography } from '@mui/material';
 
-import BackorderMessage from '@/components/BackorderMessage';
 import { ProductImage } from '@/components/B3ProductList';
+import BackorderMessage from '@/components/BackorderMessage';
 import { useBackorderStorefrontMessaging } from '@/hooks/useBackorderStorefrontMessaging';
 import { useFeatureFlag } from '@/hooks/useFeatureFlag';
 import { useB3Lang } from '@/lib/lang';
