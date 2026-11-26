@@ -11,11 +11,7 @@ import DownloadDigitalProductsDialog from './DownloadDigitalProductsDialog/Downl
 import { getDigitalDownloadElements } from './getDigitalDownloadElements';
 import { OrderProductList } from './OrderProductList';
 
-type OrderBillingProps = {
-  isCurrentCompany: boolean;
-};
-
-export function OrderBilling({ isCurrentCompany }: OrderBillingProps) {
+export function OrderBilling() {
   const {
     state: {
       billingAddress,
@@ -152,7 +148,6 @@ export function OrderBilling({ isCurrentCompany }: OrderBillingProps) {
               digitalProductsWithUrl.length ? digitalProductsWithUrl : digitalProducts || []
             }
             totalText="Total"
-            canToProduct={isCurrentCompany}
             textAlign={isMobile ? 'left' : 'right'}
             money={money}
             getCurrentProductUrls={getCurrentProductUrls}

@@ -4,6 +4,7 @@ export interface PdfExtraField {
 }
 
 export interface PdfVariantData {
+  description?: Record<string, string>;
   yourCode?: string;
   sku?: string;
   packaging: Record<string, string>;

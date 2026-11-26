@@ -42,6 +42,7 @@ const metafieldValues = (connection?: MetafieldConnection) =>
 export async function fetchQuotePdfVariants(
   items: VariantTarget[],
   customerOracleId?: string,
+  language?: string,
 ): Promise<Record<number, PdfVariantData>> {
   const hits = await searchVariantsBySku(items.map(({ sku }) => sku));
   return Object.fromEntries(
@@ -50,10 +51,17 @@ export async function fetchQuotePdfVariants(
         throw new Error(`Invalid variant ID for SKU ${sku}.`);
       }
       const hit = hits.get(sku.trim())!;
+      if (
+        language &&
+        (typeof hit.description?.[language] !== 'string' || !hit.description[language].trim())
+      ) {
+        throw new Error(`Missing Search Gateway description.${language} for variant ${sku}.`);
+      }
       return [
         Number(variantId),
         {
           sku: hit.variantSku,
+          description: hit.description,
           packaging: {
             SCATOLA: String(hit.packaging.box),
             MASTER_CARTON: String(hit.packaging.masterCarton),

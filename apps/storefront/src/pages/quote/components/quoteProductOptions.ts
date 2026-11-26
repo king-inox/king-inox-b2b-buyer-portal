@@ -26,3 +26,20 @@ export function isNotesLabel(label: string | undefined): boolean {
 export function isDisambiguationLabel(label: string | undefined): boolean {
   return ['disambigua', 'disambiegua'].includes(normalizeOptionLabel(label) || '');
 }
+
+export function isDetailProductOptionVisible(label: string | undefined): boolean {
+  const dimensionLabels = [
+    'diametro',
+    'diameter',
+    'diametre',
+    'durchmesser',
+    'lunghezza',
+    'length',
+    'longueur',
+    'lange',
+    'longitud',
+  ];
+  return (
+    !isDisambiguationLabel(label) && !dimensionLabels.includes(normalizeOptionLabel(label) || '')
+  );
+}

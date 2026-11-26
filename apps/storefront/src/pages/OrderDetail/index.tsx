@@ -421,9 +421,9 @@ function OrderDetail() {
             }
           >
             <Stack spacing={3}>
-              <OrderShipping isCurrentCompany={isCurrentCompany} />
+              <OrderShipping />
               {/* Digital Order Display */}
-              {!!digitalProducts?.length && <OrderBilling isCurrentCompany={isCurrentCompany} />}
+              {!!digitalProducts?.length && <OrderBilling />}
               <OrderHistory />
             </Stack>
           </Grid>

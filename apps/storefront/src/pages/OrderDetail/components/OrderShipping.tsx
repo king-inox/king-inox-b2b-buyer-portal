@@ -17,11 +17,7 @@ const ShipmentTitle = styled('span')(() => ({
   color: '#313440',
 }));
 
-type OrderShippingProps = {
-  isCurrentCompany: boolean;
-};
-
-export function OrderShipping({ isCurrentCompany }: OrderShippingProps) {
+export function OrderShipping() {
   const {
     state: { shippings = [], addressLabelPermission, money, products },
   } = useContext(OrderDetailsContext);
@@ -168,7 +164,6 @@ export function OrderShipping({ isCurrentCompany }: OrderShippingProps) {
                     products={shipment.itemsInfo}
                     money={money}
                     totalText="Total"
-                    canToProduct={isCurrentCompany}
                     textAlign="right"
                   />
                 </Fragment>
@@ -193,7 +188,6 @@ export function OrderShipping({ isCurrentCompany }: OrderShippingProps) {
                   products={shipping.notShip.itemsInfo}
                   money={money}
                   totalText="Total"
-                  canToProduct={isCurrentCompany}
                   textAlign={isMobile ? 'left' : 'right'}
                 />
               </Fragment>

@@ -4,6 +4,7 @@ import { getCurrentApiClientId, getCurrentApiDomain } from './apiDomain';
 
 export interface SearchVariant {
   variantSku: string;
+  description: Record<string, string>;
   size: string;
   weight: number;
   packaging: { box: number; masterCarton: number; pallet: number };

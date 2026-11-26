@@ -1,11 +1,12 @@
 import { forwardRef, Ref, useImperativeHandle, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
 import { Alert, Box, FormControlLabel, styled, Switch, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 
 import BackorderMessage from '@/components/BackorderMessage';
+import { ProductImage } from '@/components/B3ProductList';
 import { B3PaginationTable, GetRequestList } from '@/components/table/B3PaginationTable';
 import { TableColumnItem } from '@/components/table/B3Table';
-import { PRODUCT_DEFAULT_IMAGE } from '@/constants';
 import { useBackorderStorefrontMessaging } from '@/hooks/useBackorderStorefrontMessaging';
 import { useB3Lang } from '@/lib/lang';
 import { useAppSelector } from '@/store';
@@ -13,7 +14,7 @@ import { getBCPrice, getDisplayPrice } from '@/utils/b3Product/b3Product';
 
 import QuoteDetailTableCard from './QuoteDetailTableCard';
 import { formatQuoteConvertedPrice, formatQuoteConvertedUnitPrice } from './quotePriceFormat';
-import { isDisambiguationLabel } from './quoteProductOptions';
+import { isDetailProductOptionVisible } from './quoteProductOptions';
 import { fetchQuotePdfVariants } from './useQuotePdfResources';
 
 interface ProductInfoProps {
@@ -106,14 +107,9 @@ const StyledQuoteTableContainer = styled('div')(() => ({
   },
 }));
 
-const StyledImage = styled('img')(() => ({
-  maxWidth: '60px',
-  height: 'auto',
-  marginRight: '0.5rem',
-}));
-
 function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
   const b3Lang = useB3Lang();
+  const { locale } = useIntl();
   const {
     total,
     formattedTotal,
@@ -128,9 +124,10 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
   const { data: variants = {}, error } = useQuery({
     queryKey: [
       'quote-detail-variant-measures',
+      locale,
       productList.map(({ productId, variantId, sku }) => ({ productId, variantId, sku })),
     ],
-    queryFn: () => fetchQuotePdfVariants(productList),
+    queryFn: () => fetchQuotePdfVariants(productList, undefined, locale),
     enabled: productList.length > 0,
     retry: false,
   });
@@ -181,43 +178,22 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
       key: 'Product',
       title: b3Lang('quoteDetail.table.product'),
       render: (row: CustomFieldItems) => {
-        const optionsValue = (row.options || []).filter(
-          (option: OptionProps) => !isDisambiguationLabel(option.optionName),
+        const optionsValue = (row.options || []).filter((option: OptionProps) =>
+          isDetailProductOptionVisible(option.optionName),
         );
-        const productUrl = row.productsSearch?.productUrl;
 
         return (
           <Box
             sx={{
               display: 'flex',
               alignItems: 'flex-start',
+              gap: 1,
             }}
           >
-            <StyledImage
-              src={row.imageUrl || PRODUCT_DEFAULT_IMAGE}
-              alt="Product-img"
-              loading="lazy"
-            />
-            <Box>
-              <Typography
-                variant="body1"
-                color="#212121"
-                onClick={() => {
-                  const {
-                    location: { origin },
-                  } = window;
-                  if (productUrl) {
-                    window.location.href = `${origin}${productUrl}`;
-                  }
-                }}
-                sx={{
-                  cursor: 'pointer',
-                }}
-              >
-                {row.productName}
-              </Typography>
-              <Typography variant="body1" color="#616161">
-                {row.sku}
+            <ProductImage src={row.imageUrl} alt="" loading="lazy" />
+            <Box sx={{ minWidth: 0 }}>
+              <Typography variant="body1" color="#212121">
+                {variants[Number(row.variantId)]?.description?.[locale]}
               </Typography>
               {optionsValue.length > 0 && (
                 <Box>
@@ -256,7 +232,7 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
           </Box>
         );
       },
-      width: '28%',
+      width: '44%',
     },
     {
       key: 'Measure',
@@ -266,7 +242,7 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
           {variants[Number(row.variantId)]?.dimensions.MISURA || '—'}
         </Typography>
       ),
-      width: '22%',
+      width: '6%',
     },
     {
       key: 'Price',
@@ -483,6 +459,7 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
           <QuoteDetailTableCard
             len={total || 0}
             item={row}
+            description={variants[Number(row.variantId)]?.description?.[locale]}
             measure={variants[Number(row.variantId)]?.dimensions.MISURA || '—'}
             showPrice={showPrice}
             itemIndex={index}

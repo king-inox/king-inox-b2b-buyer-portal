@@ -66,6 +66,7 @@ describe('quote PDF resources', () => {
 
 const buildHitWith = builder(() => ({
   variantSku: faker.string.alphanumeric(12),
+  description: { en: faker.commerce.productName(), it: faker.commerce.productName() },
   size: faker.string.alphanumeric(10),
   weight: faker.number.int({ min: 0, max: 100 }),
   packaging: {
@@ -108,6 +109,7 @@ it('fetches all unique SKUs in one authenticated request and maps results by exa
   targets.forEach(({ variantId }, index) => {
     expect(variants[variantId]).toEqual({
       sku: targets[index].sku,
+      description: hits[index].description,
       packaging: {
         SCATOLA: String(hits[index].packaging.box),
         MASTER_CARTON: String(hits[index].packaging.masterCarton),
@@ -195,4 +197,19 @@ it('rejects incomplete gateway data instead of exporting undefined values', asyn
     ),
   );
   await expect(fetchQuotePdfVariants([target])).rejects.toThrow('Invalid Search Gateway data');
+});
+
+it('requires the gateway description in the requested language without substituting English', async () => {
+  const target = buildTargetWith('WHATEVER_VALUES');
+  const hit = buildHitWith({ variantSku: target.sku });
+  server.use(
+    http.post('*/api/v1/bigcommerce/search', () =>
+      HttpResponse.json({
+        meiliSearchOutput: { hits: [hit] },
+      }),
+    ),
+  );
+  const result = await fetchQuotePdfVariants([target], undefined, 'it');
+  expect(result[target.variantId].description?.it).toBe(hit.description.it);
+  await expect(fetchQuotePdfVariants([target], undefined, 'fr')).rejects.toThrow('description.fr');
 });

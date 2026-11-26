@@ -1,8 +1,9 @@
+import { useIntl } from 'react-intl';
 import { Alert, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 
 import { B3ProductList } from '@/components/B3ProductList';
-import { isDisambiguationLabel } from '@/pages/quote/components/quoteProductOptions';
+import { isDetailProductOptionVisible } from '@/pages/quote/components/quoteProductOptions';
 import { fetchQuotePdfVariants } from '@/pages/quote/components/useQuotePdfResources';
 import { MoneyFormat, ProductItem } from '@/types';
 import { currencyFormatInfo, ordersCurrencyFormat } from '@/utils/b3CurrencyFormat';
@@ -13,7 +14,6 @@ interface Props<T extends ProductItem> {
   money?: MoneyFormat;
   quantityKey?: string;
   totalText?: string;
-  canToProduct?: boolean;
   textAlign?: string;
   getCurrentProductUrls?: (productId: number | undefined) => void;
 }
@@ -24,18 +24,18 @@ export function OrderProductList<T extends ProductItem>({
   money,
   quantityKey,
   totalText,
-  canToProduct,
   textAlign,
   getCurrentProductUrls,
 }: Props<T>) {
+  const { locale } = useIntl();
   const targets = variantProducts.map((product) => ({
     sku: product.sku,
     productId: product.product_id,
     variantId: product.variant_id,
   }));
   const { data: variants = {}, error } = useQuery({
-    queryKey: ['order-product-measures', targets],
-    queryFn: () => fetchQuotePdfVariants(targets),
+    queryKey: ['order-product-measures', targets, locale],
+    queryFn: () => fetchQuotePdfVariants(targets, undefined, locale),
     enabled: variantProducts.length > 0,
     staleTime: 60_000,
     retry: false,
@@ -52,16 +52,19 @@ export function OrderProductList<T extends ProductItem>({
 
   return (
     <B3ProductList
-      hideMobileImages
-      products={products}
+      measureWidth="6%"
+      hideSku
+      products={products.map((product) => ({
+        ...product,
+        name: variants[Number(product.variant_id)]?.description?.[locale],
+      }))}
       money={money}
       quantityKey={quantityKey}
       totalText={totalText}
-      canToProduct={canToProduct}
       textAlign={textAlign}
       getCurrentProductUrls={getCurrentProductUrls}
       formatUnitPrice={formatUnitPrice}
-      isProductOptionVisible={(label) => !isDisambiguationLabel(label)}
+      isProductOptionVisible={isDetailProductOptionVisible}
       renderMeasure={(product) => (
         <Typography component="span">
           {variants[Number(product.variant_id)]?.dimensions.MISURA}

@@ -43,6 +43,7 @@ vitest.mock('../quote/components/quotePdf', async (importOriginal) => ({
 const { server } = startMockServer();
 
 const buildGatewayHitWith = builder(() => ({
+  description: { en: faker.commerce.productName(), it: faker.commerce.productName() },
   variantSku: faker.string.alphanumeric(),
   size: faker.string.alphanumeric(),
   weight: 1,
@@ -889,8 +890,15 @@ describe('when the user is a B2B customer', () => {
         HttpResponse.json({
           meiliSearchOutput: {
             hits: [
-              buildGatewayHitWith({ variantSku: woolSock.sku, size: measure }),
-              buildGatewayHitWith({ variantSku: denimJacket.sku }),
+              buildGatewayHitWith({
+                variantSku: woolSock.sku,
+                size: measure,
+                description: { en: 'Gateway Wool Socks' },
+              }),
+              buildGatewayHitWith({
+                variantSku: denimJacket.sku,
+                description: { en: 'Gateway Denim Jacket' },
+              }),
             ],
           },
         }),
@@ -919,13 +927,13 @@ describe('when the user is a B2B customer', () => {
     expect(await screen.findByText(measure)).toBeInTheDocument();
     expect(screen.queryByText(/disambigua/i)).not.toBeInTheDocument();
 
-    const rowOfWoolSocks = await screen.findByRole('row', { name: /Wool Socks/ });
+    const rowOfWoolSocks = await screen.findByRole('row', { name: /Gateway Wool Socks/ });
 
     expect(within(rowOfWoolSocks).getByRole('cell', { name: '4,900.00 %' })).toBeInTheDocument();
     expect(within(rowOfWoolSocks).getByRole('cell', { name: '10' })).toBeInTheDocument();
     expect(within(rowOfWoolSocks).getByRole('cell', { name: '$490.00' })).toBeInTheDocument();
 
-    const rowOfDenimJacket = await screen.findByRole('row', { name: /Denim Jacket/ });
+    const rowOfDenimJacket = await screen.findByRole('row', { name: /Gateway Denim Jacket/ });
 
     expect(within(rowOfDenimJacket).getByRole('cell', { name: '13,333.00 %' })).toBeInTheDocument();
     expect(within(rowOfDenimJacket).getByRole('cell', { name: '3' })).toBeInTheDocument();
@@ -1848,6 +1856,18 @@ describe('when the user is a B2B customer', () => {
       });
 
       server.use(
+        http.post('*/api/v1/bigcommerce/search', () =>
+          HttpResponse.json({
+            meiliSearchOutput: {
+              hits: [
+                buildGatewayHitWith({
+                  variantSku: woolSock.sku,
+                  description: { en: 'Wool Socks' },
+                }),
+              ],
+            },
+          }),
+        ),
         graphql.query('GetQuoteInfoB2B', () => HttpResponse.json(quote)),
         graphql.query('SearchProducts', () =>
           HttpResponse.json(buildProductSearchResponseWith('WHATEVER_VALUES')),

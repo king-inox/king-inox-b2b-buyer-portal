@@ -80,7 +80,7 @@ const ProductHead = styled('div')(() => ({
   color: '#263238',
 }));
 
-const ProductImage = styled('img')(() => ({
+export const ProductImage = styled('img')(() => ({
   width: '60px',
   borderRadius: '4px',
   flexShrink: 0,
@@ -148,6 +148,9 @@ function getBackorderLayoutStyles(
 
 interface ProductProps<T> {
   hideMobileImages?: boolean;
+  hideImages?: boolean;
+  measureWidth?: string;
+  hideSku?: boolean;
   renderMeasure?: (product: T & ProductItem) => ReactElement<any>;
   measureTitle?: string;
   formatUnitPrice?: (price: number) => string;
@@ -182,6 +185,9 @@ export function B3ProductList<T>(props: ProductProps<T>) {
   const {
     products,
     hideMobileImages = false,
+    hideImages = false,
+    measureWidth = '18%',
+    hideSku = false,
     renderMeasure,
     measureTitle = 'Misura',
     formatUnitPrice,
@@ -275,7 +281,7 @@ export function B3ProductList<T>(props: ProductProps<T>) {
     setList([]);
   }, [products]);
 
-  const showProductImage = !(isMobile && hideMobileImages);
+  const showProductImage = !hideImages && !(isMobile && hideMobileImages);
   const itemStyle = isMobile
     ? {
         default: { ...mobileItemStyle.default, padding: showProductImage ? '0 0 0 76px' : '0' },
@@ -322,7 +328,7 @@ export function B3ProductList<T>(props: ProductProps<T>) {
             <ProductHead>{b3Lang('global.searchProduct.product')}</ProductHead>
           </FlexItem>
           {renderMeasure && (
-            <FlexItem width="18%">
+            <FlexItem width={measureWidth}>
               <ProductHead>{measureTitle}</ProductHead>
             </FlexItem>
           )}
@@ -504,25 +510,24 @@ export function B3ProductList<T>(props: ProductProps<T>) {
                 <Typography
                   variant="body1"
                   color="#212121"
-                  onClick={() => {
-                    if (canToProduct) {
-                      const {
-                        location: { origin },
-                      } = window;
-
-                      if (product?.productUrl)
-                        window.location.href = `${origin}${product?.productUrl}`;
-                    }
-                  }}
-                  sx={{
-                    cursor: 'pointer',
-                  }}
+                  onClick={
+                    canToProduct
+                      ? () => {
+                          const { origin } = window.location;
+                          if (product.productUrl)
+                            window.location.href = `${origin}${product.productUrl}`;
+                        }
+                      : undefined
+                  }
+                  sx={{ cursor: canToProduct ? 'pointer' : 'default' }}
                 >
                   {product.name}
                 </Typography>
-                <Typography variant="body1" color="#616161">
-                  {product.sku}
-                </Typography>
+                {!hideSku && (
+                  <Typography variant="body1" color="#616161">
+                    {product.sku}
+                  </Typography>
+                )}
                 {product.type === 'digital' &&
                   product.downloadFileUrls &&
                   product.downloadFileUrls.length > 0 && (
@@ -548,7 +553,7 @@ export function B3ProductList<T>(props: ProductProps<T>) {
             </FlexItem>
 
             {renderMeasure && (
-              <FlexItem width={isMobile ? '100%' : '18%'}>
+              <FlexItem width={isMobile ? '100%' : measureWidth}>
                 <Box>
                   {isMobile && `${measureTitle}: `}
                   {renderMeasure(product)}

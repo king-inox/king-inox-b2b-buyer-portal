@@ -26,13 +26,20 @@ it('shows the variant measure and price per hundred, hides disambiguation and ke
   const product = buildProductWith('WHATEVER_VALUES');
   const measure = faker.string.alphanumeric(10);
   vi.mocked(fetchQuotePdfVariants).mockResolvedValue({
-    [product.variant_id]: { packaging: {}, stock: {}, dimensions: { MISURA: measure } },
+    [product.variant_id]: {
+      description: { en: 'Gateway description', it: 'Descrizione gateway' },
+      packaging: {},
+      stock: {},
+      dimensions: { MISURA: measure },
+    },
   });
 
   renderWithProviders(<OrderProductList products={[product]} variantProducts={[product]} />);
 
   expect(screen.getByText('Misura')).toBeInTheDocument();
   expect(await screen.findByText(measure)).toBeInTheDocument();
+  expect(screen.getByText('Gateway description')).toBeInTheDocument();
+  expect(screen.queryByText(product.name)).not.toBeInTheDocument();
   expect(screen.queryByText(/disambigua/i)).not.toBeInTheDocument();
   expect(
     screen.getByText(`${(Number(product.base_price) * 100).toFixed(2)} %`),
@@ -48,8 +55,18 @@ it('shares one bulk lookup across shipment product lists in the same order', asy
   const variantProducts = [first, second];
   vi.mocked(fetchQuotePdfVariants).mockClear();
   vi.mocked(fetchQuotePdfVariants).mockResolvedValue({
-    [first.variant_id]: { packaging: {}, stock: {}, dimensions: { MISURA: 'FIRST' } },
-    [second.variant_id]: { packaging: {}, stock: {}, dimensions: { MISURA: 'SECOND' } },
+    [first.variant_id]: {
+      description: { en: 'First description' },
+      packaging: {},
+      stock: {},
+      dimensions: { MISURA: 'FIRST' },
+    },
+    [second.variant_id]: {
+      description: { en: 'Second description' },
+      packaging: {},
+      stock: {},
+      dimensions: { MISURA: 'SECOND' },
+    },
   });
   renderWithProviders(
     <>
@@ -65,5 +82,7 @@ it('shares one bulk lookup across shipment product lists in the same order', asy
       productId: product.product_id,
       variantId: product.variant_id,
     })),
+    undefined,
+    'en',
   );
 });

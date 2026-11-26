@@ -1,6 +1,7 @@
 import { Box, CardContent, Typography } from '@mui/material';
 
 import BackorderMessage from '@/components/BackorderMessage';
+import { ProductImage } from '@/components/B3ProductList';
 import { useBackorderStorefrontMessaging } from '@/hooks/useBackorderStorefrontMessaging';
 import { useFeatureFlag } from '@/hooks/useFeatureFlag';
 import { useB3Lang } from '@/lib/lang';
@@ -9,10 +10,11 @@ import { DisplayCurrency } from '@/types/currency';
 import { getBCPrice } from '@/utils/b3Product/b3Product';
 
 import { formatQuoteConvertedPrice, formatQuoteConvertedUnitPrice } from './quotePriceFormat';
-import { isDisambiguationLabel } from './quoteProductOptions';
+import { isDetailProductOptionVisible } from './quoteProductOptions';
 
 interface QuoteTableCardProps {
   measure?: string;
+  description?: string;
   item: any;
   len: number;
   getTaxRate: (variants: any) => number;
@@ -36,6 +38,7 @@ function QuoteDetailTableCard(props: QuoteTableCardProps) {
     showBackorderDetails = false,
     status,
     measure = '—',
+    description,
   } = props;
   const isOrdered = Number(status) === 4;
   const b3Lang = useB3Lang();
@@ -51,15 +54,13 @@ function QuoteDetailTableCard(props: QuoteTableCardProps) {
   const {
     basePrice,
     quantity,
-    productName,
     options,
-    sku,
     notes,
     offeredPrice,
     backorderMessage,
     quantityBackordered,
     totalOnHand,
-    productsSearch: { productUrl, variants = [] },
+    productsSearch: { variants = [] },
   } = quoteTableItem;
 
   const taxRate = getTaxRate(variants);
@@ -91,34 +92,20 @@ function QuoteDetailTableCard(props: QuoteTableCardProps) {
         sx={{
           color: '#313440',
           display: 'flex',
+          alignItems: 'flex-start',
+          gap: 1,
           pl: 0,
         }}
       >
+        <ProductImage src={quoteTableItem.imageUrl} alt="" loading="lazy" />
         <Box
           sx={{
             flex: 1,
+            minWidth: 0,
           }}
         >
-          <Typography
-            variant="body1"
-            color="#212121"
-            onClick={() => {
-              const {
-                location: { origin },
-              } = window;
-
-              if (productUrl) {
-                window.location.href = `${origin}${productUrl}`;
-              }
-            }}
-            sx={{
-              cursor: 'pointer',
-            }}
-          >
-            {productName}
-          </Typography>
-          <Typography variant="body1" color="#616161">
-            {sku}
+          <Typography variant="body1" color="#212121">
+            {description}
           </Typography>
           <Box
             sx={{
@@ -128,8 +115,8 @@ function QuoteDetailTableCard(props: QuoteTableCardProps) {
             {options.length > 0 && (
               <Box>
                 {options
-                  .filter(
-                    (option: { optionName?: string }) => !isDisambiguationLabel(option.optionName),
+                  .filter((option: { optionName?: string }) =>
+                    isDetailProductOptionVisible(option.optionName),
                   )
                   .map((option: any) => (
                     <Typography
