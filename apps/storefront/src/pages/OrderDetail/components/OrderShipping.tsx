@@ -23,7 +23,7 @@ type OrderShippingProps = {
 
 export function OrderShipping({ isCurrentCompany }: OrderShippingProps) {
   const {
-    state: { shippings = [], addressLabelPermission, money },
+    state: { shippings = [], addressLabelPermission, money, products },
   } = useContext(OrderDetailsContext);
 
   const [isMobile] = useMobile();
@@ -163,6 +163,7 @@ export function OrderShipping({ isCurrentCompany }: OrderShippingProps) {
                     )}
                   </Box>
                   <OrderProductList
+                    variantProducts={products!}
                     quantityKey="current_quantity_shipped"
                     products={shipment.itemsInfo}
                     money={money}
@@ -187,6 +188,7 @@ export function OrderShipping({ isCurrentCompany }: OrderShippingProps) {
                 </Box> */}
 
                 <OrderProductList
+                  variantProducts={products!}
                   quantityKey="not_shipping_number"
                   products={shipping.notShip.itemsInfo}
                   money={money}

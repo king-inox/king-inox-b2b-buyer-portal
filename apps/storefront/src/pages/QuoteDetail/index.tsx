@@ -98,7 +98,7 @@ interface ProductInfoProps {
   updatedAt: number;
   variantId: number;
   variantSku: string;
-  sku?: string;
+  sku: string;
   productsSearch: CustomFieldItems;
   backorderMessage?: string;
   totalOnHand?: number;
@@ -567,7 +567,7 @@ function QuoteDetail() {
 
   const { locale: pdfLocale } = useIntl();
   const loadPdfResources = useQuotePdfResources({
-    items: productList.map(({ productId, variantId }) => ({ productId, variantId })),
+    items: productList.map(({ productId, variantId, sku }) => ({ productId, variantId, sku })),
     companyId: quoteDetail.companyId?.id,
     companyFields: quoteDetail.companyId?.extraFields,
   });

@@ -17,7 +17,14 @@ type OrderBillingProps = {
 
 export function OrderBilling({ isCurrentCompany }: OrderBillingProps) {
   const {
-    state: { billingAddress, digitalProducts = [], addressLabelPermission, orderId, money },
+    state: {
+      billingAddress,
+      digitalProducts = [],
+      addressLabelPermission,
+      orderId,
+      money,
+      products,
+    },
   } = useContext(OrderDetailsContext);
 
   const [isMobile] = useMobile();
@@ -140,6 +147,7 @@ export function OrderBilling({ isCurrentCompany }: OrderBillingProps) {
           </Box>
 
           <OrderProductList
+            variantProducts={products!}
             products={
               digitalProductsWithUrl.length ? digitalProductsWithUrl : digitalProducts || []
             }

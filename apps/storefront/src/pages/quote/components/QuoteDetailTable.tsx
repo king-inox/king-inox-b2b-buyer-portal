@@ -1,5 +1,5 @@
 import { forwardRef, Ref, useImperativeHandle, useRef, useState } from 'react';
-import { Box, FormControlLabel, styled, Switch, Typography } from '@mui/material';
+import { Alert, Box, FormControlLabel, styled, Switch, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 
 import BackorderMessage from '@/components/BackorderMessage';
@@ -34,6 +34,7 @@ interface ProductInfoProps {
   updatedAt: number;
   variantId: number;
   variantSku: string;
+  sku: string;
   productsSearch: CustomFieldItems;
   offeredPrice: number | string;
   backorderMessage?: string;
@@ -124,13 +125,14 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
     currency,
     status,
   } = props;
-  const { data: variants = {} } = useQuery({
+  const { data: variants = {}, error } = useQuery({
     queryKey: [
       'quote-detail-variant-measures',
-      productList.map(({ productId, variantId }) => ({ productId, variantId })),
+      productList.map(({ productId, variantId, sku }) => ({ productId, variantId, sku })),
     ],
     queryFn: () => fetchQuotePdfVariants(productList),
     enabled: productList.length > 0,
+    retry: false,
   });
   const isOrdered = Number(status) === 4;
 
@@ -426,6 +428,8 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
       },
     },
   ];
+
+  if (error) return <Alert severity="error">{error.message}</Alert>;
 
   return (
     <StyledQuoteTableContainer>

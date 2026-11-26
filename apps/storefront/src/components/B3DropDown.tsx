@@ -21,7 +21,7 @@ export interface DropDownHandle {
   setOpenDropDown: () => void;
 }
 
-interface B3DropDownProps extends Partial<MenuProps> {
+interface B3DropDownProps extends Partial<Omit<MenuProps, 'title'>> {
   width?: string;
   list: Array<ListItemProps>;
   title: ReactNode;

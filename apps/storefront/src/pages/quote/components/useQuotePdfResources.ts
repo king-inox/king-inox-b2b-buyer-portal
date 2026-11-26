@@ -1,26 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { storefrontGQLRequest } from '@/shared/service/bc/graphql/client';
+import { searchVariantsBySku } from '@/shared/service/kingInox/searchVariants';
 import B3Request from '@/shared/service/request/b3Fetch';
 
-import { getQuotePdfCustomCode, type PdfExtraField, type PdfVariantData } from './quotePdfData';
+import { type PdfExtraField, type PdfVariantData } from './quotePdfData';
 
 interface VariantTarget {
+  sku: string;
   productId?: number | string;
   variantId?: number | string;
 }
 
 interface MetafieldConnection {
   edges?: Array<{ node: { key: string; value: string } }>;
-}
-
-interface VariantNode {
-  entityId: number;
-  sku?: string;
-  packaging?: MetafieldConnection;
-  dimensions?: MetafieldConnection;
-  stock?: MetafieldConnection;
-  customCodes?: MetafieldConnection;
 }
 
 export interface PdfAddress {
@@ -43,9 +36,6 @@ interface ResourceOptions {
   companyFields?: PdfExtraField[];
 }
 
-const PDF_VARIANTS_PER_REQUEST = 5;
-const PDF_VARIANT_REQUEST_CONCURRENCY = 3;
-
 const metafieldValues = (connection?: MetafieldConnection) =>
   Object.fromEntries((connection?.edges || []).map(({ node }) => [node.key, node.value]));
 
@@ -53,86 +43,39 @@ export async function fetchQuotePdfVariants(
   items: VariantTarget[],
   customerOracleId?: string,
 ): Promise<Record<number, PdfVariantData>> {
-  const targets = items
-    .filter(
-      ({ productId, variantId }) =>
-        Number.isInteger(Number(productId)) &&
-        Number(productId) > 0 &&
-        Number.isInteger(Number(variantId)) &&
-        Number(variantId) > 0,
-    )
-    .filter(
-      (item, index, all) =>
-        all.findIndex(
-          (other) =>
-            Number(other.productId) === Number(item.productId) &&
-            Number(other.variantId) === Number(item.variantId),
-        ) === index,
-    );
-  // Nested metafield connections made batches of 20 exceed BigCommerce's 10,000 limit.
-  const batches = Array.from(
-    { length: Math.ceil(targets.length / PDF_VARIANTS_PER_REQUEST) },
-    (_, index) =>
-      targets.slice(index * PDF_VARIANTS_PER_REQUEST, (index + 1) * PDF_VARIANTS_PER_REQUEST),
-  );
-  const fetchBatch = async (batch: VariantTarget[]) => {
-    const result: Record<number, PdfVariantData> = {};
-    const selections = batch
-      .map(
-        ({ productId, variantId }, index) => `
-      p${index}: product(entityId: ${Number(productId)}) {
-        variants(entityIds: [${Number(variantId)}], first: 1) {
-          edges { node { entityId sku
-            packaging: metafields(namespace: "packaging", first: 10) { edges { node { key value } } }
-            dimensions: metafields(namespace: "dimensions", first: 10) { edges { node { key value } } }
-            stock: metafields(namespace: "stock", first: 10) { edges { node { key value } } }
-            ${customerOracleId ? 'customCodes: metafields(namespace: "customCodes", keys: ["CUSTOM_CODES"], first: 1) { edges { node { key value } } }' : ''}
-          } }
-        }
-      }`,
-      )
-      .join('\n');
-    const response = await storefrontGQLRequest<{
-      data?: {
-        site?: Record<string, { variants?: { edges?: Array<{ node: VariantNode }> } } | null>;
-      };
-      errors?: Array<{ message: string }>;
-    }>({
-      query: `query GetQuotePdfVariants { site { ${selections} } }`,
-    });
-    if (response.errors?.length) throw new Error(response.errors[0].message);
-    Object.values(response.data?.site || {}).forEach((product) => {
-      const variant = product?.variants?.edges?.[0]?.node;
-      if (variant)
-        result[variant.entityId] = {
-          sku: variant.sku,
-          packaging: metafieldValues(variant.packaging),
-          dimensions: metafieldValues(variant.dimensions),
-          stock: metafieldValues(variant.stock),
+  const hits = await searchVariantsBySku(items.map(({ sku }) => sku));
+  return Object.fromEntries(
+    items.map(({ variantId, sku }) => {
+      if (!Number.isInteger(Number(variantId)) || Number(variantId) <= 0) {
+        throw new Error(`Invalid variant ID for SKU ${sku}.`);
+      }
+      const hit = hits.get(sku.trim())!;
+      return [
+        Number(variantId),
+        {
+          sku: hit.variantSku,
+          packaging: {
+            SCATOLA: String(hit.packaging.box),
+            MASTER_CARTON: String(hit.packaging.masterCarton),
+            PALLET: String(hit.packaging.pallet),
+          },
+          dimensions: { MISURA: hit.size, PESO: String(hit.weight) },
+          stock: {
+            STOCK: String(hit.availability.inStock),
+            QTA_REFILL: String(hit.availability.nextRefillyQuantity),
+            DATA_REFILL: hit.availability.nextRefill === null ? '' : hit.availability.nextRefill,
+          },
           ...(customerOracleId
             ? {
-                yourCode: getQuotePdfCustomCode(
-                  metafieldValues(variant.customCodes).CUSTOM_CODES,
-                  customerOracleId,
-                ),
+                yourCode: hit.customs
+                  ?.find((entry) => entry.slice(0, entry.indexOf('|')) === customerOracleId)
+                  ?.slice(customerOracleId.length + 1),
               }
             : {}),
-        };
-    });
-    return result;
-  };
-  const variants: Record<number, PdfVariantData> = {};
-  const fetchNextBatch = async (index: number): Promise<void> => {
-    if (index >= batches.length) return;
-    Object.assign(variants, await fetchBatch(batches[index]));
-    await fetchNextBatch(index + PDF_VARIANT_REQUEST_CONCURRENCY);
-  };
-  await Promise.all(
-    Array.from({ length: Math.min(batches.length, PDF_VARIANT_REQUEST_CONCURRENCY) }, (_, index) =>
-      fetchNextBatch(index),
-    ),
+        },
+      ];
+    }),
   );
-  return variants;
 }
 
 async function fetchPdfVariantsForCustomer(items: VariantTarget[]) {

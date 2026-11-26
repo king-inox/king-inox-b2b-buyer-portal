@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Alert, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 
 import { B3ProductList } from '@/components/B3ProductList';
@@ -9,6 +9,7 @@ import { currencyFormatInfo, ordersCurrencyFormat } from '@/utils/b3CurrencyForm
 
 interface Props<T extends ProductItem> {
   products: Array<T & { variant_id?: number }>;
+  variantProducts: Array<ProductItem & { variant_id?: number }>;
   money?: MoneyFormat;
   quantityKey?: string;
   totalText?: string;
@@ -19,6 +20,7 @@ interface Props<T extends ProductItem> {
 
 export function OrderProductList<T extends ProductItem>({
   products,
+  variantProducts,
   money,
   quantityKey,
   totalText,
@@ -26,14 +28,17 @@ export function OrderProductList<T extends ProductItem>({
   textAlign,
   getCurrentProductUrls,
 }: Props<T>) {
-  const targets = products.map((product) => ({
+  const targets = variantProducts.map((product) => ({
+    sku: product.sku,
     productId: product.product_id,
     variantId: product.variant_id,
   }));
-  const { data: variants = {} } = useQuery({
+  const { data: variants = {}, error } = useQuery({
     queryKey: ['order-product-measures', targets],
     queryFn: () => fetchQuotePdfVariants(targets),
-    enabled: products.length > 0,
+    enabled: variantProducts.length > 0,
+    staleTime: 60_000,
+    retry: false,
   });
 
   const formatUnitPrice = (price: number) =>
@@ -42,6 +47,8 @@ export function OrderProductList<T extends ProductItem>({
       price * 100,
       false,
     )} %`;
+
+  if (error) return <Alert severity="error">{error.message}</Alert>;
 
   return (
     <B3ProductList
@@ -57,11 +64,7 @@ export function OrderProductList<T extends ProductItem>({
       isProductOptionVisible={(label) => !isDisambiguationLabel(label)}
       renderMeasure={(product) => (
         <Typography component="span">
-          {variants[Number(product.variant_id)]?.dimensions.MISURA ||
-            product.product_options?.find(
-              (option) => option.display_name.toLowerCase() === 'misura',
-            )?.display_value ||
-            '—'}
+          {variants[Number(product.variant_id)]?.dimensions.MISURA}
         </Typography>
       )}
     />

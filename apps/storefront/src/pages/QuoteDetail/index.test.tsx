@@ -42,6 +42,30 @@ vitest.mock('../quote/components/quotePdf', async (importOriginal) => ({
 
 const { server } = startMockServer();
 
+const buildGatewayHitWith = builder(() => ({
+  variantSku: faker.string.alphanumeric(),
+  size: faker.string.alphanumeric(),
+  weight: 1,
+  packaging: { box: 1, masterCarton: 10, pallet: 100 },
+  availability: { inStock: 10, nextRefillyQuantity: 0, nextRefill: null },
+  customs: [] as string[],
+}));
+
+beforeEach(() => {
+  server.use(
+    http.get('*/customer/current.jwt', () => HttpResponse.text('customer-jwt')),
+    http.post('*/api/v1/bigcommerce/search', async ({ request }) => {
+      const body = (await request.json()) as { filter: string[] };
+      const skus: string[] = JSON.parse(body.filter[0].slice('variantSku IN '.length));
+      return HttpResponse.json({
+        meiliSearchOutput: {
+          hits: skus.map((variantSku) => buildGatewayHitWith({ variantSku })),
+        },
+      });
+    }),
+  );
+});
+
 type QuoteProduct = B2BQuoteDetail['data']['quote']['productsList'][number];
 
 const buildQuoteProductWith = builder<QuoteProduct>(() => ({
@@ -604,36 +628,18 @@ describe('when the user is a B2B customer', () => {
             },
           }),
         ),
-        graphql.query('GetQuotePdfVariants', ({ query }) => {
-          expect(query).toContain('keys: ["CUSTOM_CODES"]');
-          return HttpResponse.json({
-            data: {
-              site: {
-                p0: {
-                  variants: {
-                    edges: [
-                      {
-                        node: {
-                          entityId: product.variantId,
-                          customCodes: {
-                            edges: [
-                              {
-                                node: {
-                                  key: 'CUSTOM_CODES',
-                                  value: `${oracleId}-other=OTHER|${oracleId}=${yourCode}`,
-                                },
-                              },
-                            ],
-                          },
-                        },
-                      },
-                    ],
-                  },
-                },
-              },
+        http.post('*/api/v1/bigcommerce/search', () =>
+          HttpResponse.json({
+            meiliSearchOutput: {
+              hits: [
+                buildGatewayHitWith({
+                  variantSku: product.sku,
+                  customs: [`${oracleId}-other|OTHER`, `${oracleId}|${yourCode}`],
+                }),
+              ],
             },
-          });
-        }),
+          }),
+        ),
         graphql.query('GetQuotePdfAddresses', () =>
           HttpResponse.json({
             data: { addresses: { edges: [], pageInfo: { hasNextPage: false } } },
@@ -879,23 +885,13 @@ describe('when the user is a B2B customer', () => {
     });
 
     server.use(
-      graphql.query('GetQuotePdfVariants', () =>
+      http.post('*/api/v1/bigcommerce/search', () =>
         HttpResponse.json({
-          data: {
-            site: {
-              p0: {
-                variants: {
-                  edges: [
-                    {
-                      node: {
-                        entityId: woolSock.variantId,
-                        dimensions: { edges: [{ node: { key: 'MISURA', value: measure } }] },
-                      },
-                    },
-                  ],
-                },
-              },
-            },
+          meiliSearchOutput: {
+            hits: [
+              buildGatewayHitWith({ variantSku: woolSock.sku, size: measure }),
+              buildGatewayHitWith({ variantSku: denimJacket.sku }),
+            ],
           },
         }),
       ),

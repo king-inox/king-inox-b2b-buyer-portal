@@ -29,7 +29,7 @@ it('shows the variant measure and price per hundred, hides disambiguation and ke
     [product.variant_id]: { packaging: {}, stock: {}, dimensions: { MISURA: measure } },
   });
 
-  renderWithProviders(<OrderProductList products={[product]} />);
+  renderWithProviders(<OrderProductList products={[product]} variantProducts={[product]} />);
 
   expect(screen.getByText('Misura')).toBeInTheDocument();
   expect(await screen.findByText(measure)).toBeInTheDocument();
@@ -40,4 +40,30 @@ it('shows the variant measure and price per hundred, hides disambiguation and ke
   expect(
     screen.getByText(`$${(Number(product.base_price) * product.quantity).toFixed(2)}`),
   ).toBeInTheDocument();
+});
+
+it('shares one bulk lookup across shipment product lists in the same order', async () => {
+  const first = buildProductWith('WHATEVER_VALUES');
+  const second = buildProductWith('WHATEVER_VALUES');
+  const variantProducts = [first, second];
+  vi.mocked(fetchQuotePdfVariants).mockClear();
+  vi.mocked(fetchQuotePdfVariants).mockResolvedValue({
+    [first.variant_id]: { packaging: {}, stock: {}, dimensions: { MISURA: 'FIRST' } },
+    [second.variant_id]: { packaging: {}, stock: {}, dimensions: { MISURA: 'SECOND' } },
+  });
+  renderWithProviders(
+    <>
+      <OrderProductList products={[first]} variantProducts={variantProducts} />
+      <OrderProductList products={[second]} variantProducts={variantProducts} />
+    </>,
+  );
+  expect(await screen.findByText('FIRST')).toBeInTheDocument();
+  expect(await screen.findByText('SECOND')).toBeInTheDocument();
+  expect(fetchQuotePdfVariants).toHaveBeenCalledExactlyOnceWith(
+    variantProducts.map((product) => ({
+      sku: product.sku,
+      productId: product.product_id,
+      variantId: product.variant_id,
+    })),
+  );
 });

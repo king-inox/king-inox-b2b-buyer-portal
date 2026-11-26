@@ -56,6 +56,7 @@ export function OrderPdfActions({
   const [busy, setBusy] = useState(false);
   const loadResources = useQuotePdfResources({
     items: (details.products || []).map((product) => ({
+      sku: product.sku,
       productId: product.product_id,
       variantId: product.variant_id,
     })),
