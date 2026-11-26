@@ -709,6 +709,7 @@
   "quoteDetail.header.expirationDate": "Ablaufdatum:",
   "quoteDetail.header.print": "Drucken",
   "quoteDetail.header.download": "Herunterladen",
+  "quoteDetail.header.downloadAndSave": "Herunterladen und speichern",
   "quoteDetail.header.downloadPDF": "PDF herunterladen",
   "quoteDetail.summary.quoteSummary": "Angebotsübersicht",
   "quoteDetail.summary.quoteCheckout": "Kundenauswahl an der Kasse",

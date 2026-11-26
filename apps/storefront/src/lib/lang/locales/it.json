@@ -728,6 +728,7 @@
   "quoteDetail.header.expirationDate": "Data di scadenza:",
   "quoteDetail.header.print": "Stampa",
   "quoteDetail.header.download": "Scarica",
+  "quoteDetail.header.downloadAndSave": "Scarica e salva",
   "quoteDetail.header.downloadPDF": "Scarica PDF",
   "quoteDetail.summary.quoteSummary": "Riepilogo preventivo",
   "quoteDetail.summary.quoteCheckout": "Scelta del cliente al pagamento",

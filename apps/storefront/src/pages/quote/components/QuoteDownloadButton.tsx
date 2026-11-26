@@ -34,7 +34,7 @@ export default function QuoteDownloadButton({ disabled, onClick }: QuoteDownload
       }}
       startIcon={<ArrowDownward sx={{ fontSize: '16px' }} />}
     >
-      {b3Lang('quoteDetail.header.download')}
+      {b3Lang('quoteDetail.header.downloadAndSave')}
       <SvgIcon
         titleAccess="PDF"
         viewBox="0 0 20 24"

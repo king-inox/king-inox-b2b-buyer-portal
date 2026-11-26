@@ -709,6 +709,7 @@
   "quoteDetail.header.expirationDate": "Fecha de caducidad:",
   "quoteDetail.header.print": "Imprimir",
   "quoteDetail.header.download": "Descargar",
+  "quoteDetail.header.downloadAndSave": "Descargar y guardar",
   "quoteDetail.header.downloadPDF": "Descargar PDF",
   "quoteDetail.summary.quoteSummary": "Resumen del presupuesto",
   "quoteDetail.summary.quoteCheckout": "A elección del cliente al tramitar el pedido",

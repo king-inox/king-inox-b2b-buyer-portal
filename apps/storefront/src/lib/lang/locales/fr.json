@@ -709,6 +709,7 @@
   "quoteDetail.header.expirationDate": "Date d’expiration :",
   "quoteDetail.header.print": "Imprimer",
   "quoteDetail.header.download": "Télécharger",
+  "quoteDetail.header.downloadAndSave": "Télécharger et enregistrer",
   "quoteDetail.header.downloadPDF": "Télécharger le PDF",
   "quoteDetail.summary.quoteSummary": "Récapitulatif du devis",
   "quoteDetail.summary.quoteCheckout": "Au choix du client lors du paiement",
