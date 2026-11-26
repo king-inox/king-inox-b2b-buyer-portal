@@ -1,4 +1,5 @@
 import { store } from '@/store';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 import b2bLogger from './b3Logger';
 import { BigCommerceStorefrontAPIBaseURL, platform } from './basicConfig';
@@ -41,7 +42,9 @@ export const getPrintInvoiceBaseUrl = (): string => {
 };
 
 export const getPrintInvoiceUrl = (orderId: string) =>
-  `${getPrintInvoiceBaseUrl()}/account.php?action=print_invoice&order_id=${orderId}`;
+  localizeStorefrontUrl(
+    `${getPrintInvoiceBaseUrl()}/account.php?action=print_invoice&order_id=${orderId}`,
+  );
 
 export const b2bPrintInvoice = async (orderId: string, domId: string) => {
   const url = getPrintInvoiceUrl(orderId);

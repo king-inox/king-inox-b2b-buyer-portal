@@ -14,6 +14,7 @@ import { CustomStyleContext } from '@/shared/customStyleButton';
 import { GlobalContext } from '@/shared/global';
 import { getStorefrontToken, requestResetPassword } from '@/shared/service/b2b/graphql/recaptcha';
 import b2bLogger from '@/utils/b3Logger';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 import { getForgotPasswordFields } from '../Login/helper';
 import LoginImage from '../Login/LoginImage';
@@ -114,7 +115,7 @@ export function ForgotPassword({
               src={logo}
               maxWidth={isMobile ? '175px' : '250px'}
               onClick={() => {
-                window.location.assign('/');
+                window.location.assign(localizeStorefrontUrl('/'));
               }}
             />
           )}

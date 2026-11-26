@@ -8,6 +8,7 @@ import { isB2BUserSelector, useAppSelector } from '@/store';
 import { CustomerRole } from '@/types';
 import { OpenPageState } from '@/types/hooks';
 import b2bLogger from '@/utils/b3Logger';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 import b2bVerifyBcLoginStatus from '../../utils/b2bVerifyBcLoginStatus';
 
@@ -53,7 +54,7 @@ const useRegisteredbctob2b = (setOpenPage: Dispatch<SetStateAction<OpenPageState
       const convertB2BNavNode = document.createElement('li');
       convertB2BNavNode.className = 'navUser-item navUser-convert-b2b';
       convertB2BNavNode.innerHTML = `
-        <a class="navUser-action" href="/registeredbctob2b">
+        <a class="navUser-action" href="${localizeStorefrontUrl('/registeredbctob2b')}">
           ${b3Lang('global.registerB2B.linkText')}
         </a>
       `;

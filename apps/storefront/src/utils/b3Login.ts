@@ -2,6 +2,7 @@ import { NavigateFunction } from 'react-router-dom';
 
 import { LOGIN_LANDING_LOCATIONS } from '@/constants';
 import { store } from '@/store';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 import { platform } from './basicConfig';
 
@@ -16,7 +17,7 @@ export const loginJump = (navigate: NavigateFunction, isClearSession = false) =>
 
     if (window.location.href.includes('login.php')) {
       if (isClearSession) window.sessionStorage.clear();
-      window.location.href = '/';
+      window.location.href = localizeStorefrontUrl('/');
       return false;
     }
 

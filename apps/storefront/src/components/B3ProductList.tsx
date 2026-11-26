@@ -12,6 +12,7 @@ import { useAppSelector } from '@/store';
 import { currencyFormatInfo, ordersCurrencyFormat } from '@/utils/b3CurrencyFormat';
 import { getDisplayPrice, judgmentBuyerProduct } from '@/utils/b3Product/b3Product';
 import { getCatalogProductRowDisplayState } from '@/utils/catalogBackorderDisplay';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 import { MoneyFormat, ProductItem } from '../types';
 
@@ -515,7 +516,9 @@ export function B3ProductList<T>(props: ProductProps<T>) {
                       ? () => {
                           const { origin } = window.location;
                           if (product.productUrl)
-                            window.location.href = `${origin}${product.productUrl}`;
+                            window.location.href = localizeStorefrontUrl(
+                              `${origin}${product.productUrl}`,
+                            );
                         }
                       : undefined
                   }

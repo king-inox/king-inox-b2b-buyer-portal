@@ -4,6 +4,7 @@ import { Box } from '@mui/material';
 
 import { type SetOpenPage } from '@/pages/SetOpenPage';
 import { GlobalContext } from '@/shared/global';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 import { CloseButton } from './styled';
 
@@ -22,7 +23,7 @@ export default function RegisteredCloseButton(props: CloseButtonProps) {
   const handleCloseForm = () => {
     const isInLoginPage = window.location.hash.startsWith('#/login');
     if (isCloseGotoBCHome || isInLoginPage) {
-      window.location.href = '/';
+      window.location.href = localizeStorefrontUrl('/');
     } else {
       navigate('/');
       setOpenPage({

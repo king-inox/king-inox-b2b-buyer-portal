@@ -20,6 +20,7 @@ import b2bLogger from '@/utils/b3Logger';
 import { snackbar } from '@/utils/b3Tip';
 import { platform } from '@/utils/basicConfig';
 import { isCompanyError } from '@/utils/companyUtils';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 import { getCurrentCustomerInfo } from '@/utils/loginInfo';
 import { isDefaultLoginStylingActive } from '@/utils/preMountLoginMask';
 
@@ -173,7 +174,7 @@ function Login(props: PageProps) {
       const result = await performLoginCheckout(data);
       if (result === 'success') {
         await setLastLogin();
-        window.location.href = CHECKOUT_URL;
+        window.location.href = localizeStorefrontUrl(CHECKOUT_URL);
       } else {
         setLoginFlag(result);
       }
@@ -250,7 +251,7 @@ function Login(props: PageProps) {
                       src={loginInfo.logo}
                       alt={b3Lang('login.registerLogo')}
                       onClick={() => {
-                        window.location.href = '/';
+                        window.location.href = localizeStorefrontUrl('/');
                       }}
                     />
                   )}

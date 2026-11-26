@@ -21,6 +21,7 @@ import { openPageByClick, removeBCMenus } from '@/utils/b3AccountItem';
 import { handleHideRegisterPage } from '@/utils/b3HideRegister';
 import { hideStorefrontElement } from '@/utils/b3HideStorefrontElement';
 import { getQuoteEnabled } from '@/utils/b3Init';
+import { stripStorefrontLanguagePrefix } from '@/utils/localizeStorefrontUrl';
 
 import b2bVerifyBcLoginStatus from './utils/b2bVerifyBcLoginStatus';
 import { b2bJumpPath } from './utils/b3CheckPermissions/b2bPermissionPath';
@@ -133,7 +134,8 @@ export default function App() {
   // open storefront
   useSetOpen(isOpen, openUrl, params);
 
-  const { pathname, search } = window.location;
+  const { pathname: currentPathname, search } = window.location;
+  const pathname = stripStorefrontLanguagePrefix(currentPathname);
 
   const loginAndRegister = () => {
     dispatch({

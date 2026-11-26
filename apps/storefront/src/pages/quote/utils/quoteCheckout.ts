@@ -9,6 +9,7 @@ import { attemptCheckoutLoginAndRedirect, setQuoteToStorage } from '@/utils/b3ch
 import b2bLogger from '@/utils/b3Logger';
 import { snackbar } from '@/utils/b3Tip';
 import { platform } from '@/utils/basicConfig';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 import { getSearchVal } from '@/utils/loginInfo';
 
 import { detectQuoteStockChange, QuoteStockSnapshotItem } from './detectQuoteStockChange';
@@ -122,12 +123,12 @@ export const handleQuoteCheckout = async ({
     }
 
     if (platform === 'bigcommerce') {
-      window.location.href = checkoutUrl;
+      window.location.href = localizeStorefrontUrl(checkoutUrl);
       return;
     }
 
     if (platform === 'catalyst') {
-      window.location.href = `/checkout?cartId=${cartId}`;
+      window.location.href = localizeStorefrontUrl(`/checkout?cartId=${cartId}`);
       return;
     }
 

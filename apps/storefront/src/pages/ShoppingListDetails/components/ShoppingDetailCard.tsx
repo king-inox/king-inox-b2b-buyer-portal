@@ -10,6 +10,7 @@ import b2bGetVariantImageByVariantInfo from '@/utils/b2bGetVariantImageByVariant
 import { currencyFormat } from '@/utils/b3CurrencyFormat';
 import { getBCPrice } from '@/utils/b3Product/b3Product';
 import { getCatalogProductRowDisplayState } from '@/utils/catalogBackorderDisplay';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 import { getProductOptionsFields } from '../../../utils/b3Product/shared/config';
 
@@ -144,7 +145,7 @@ function ShoppingDetailCard(props: ShoppingDetailCardProps) {
                 location: { origin },
               } = window;
 
-              window.location.href = `${origin}${productUrl}`;
+              window.location.href = localizeStorefrontUrl(`${origin}${productUrl}`);
             }}
             sx={{
               cursor: 'pointer',

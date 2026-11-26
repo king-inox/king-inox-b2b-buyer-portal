@@ -3,6 +3,7 @@ import { Box, ImageListItem } from '@mui/material';
 
 import { useMobile } from '@/hooks/useMobile';
 import { GlobalContext } from '@/shared/global';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 export default function B3Logo() {
   const {
@@ -51,9 +52,9 @@ export default function B3Logo() {
               width: 'auto',
             },
           }}
-          onClick={() => {
-            window.location.href = '/';
-          }}
+          component="a"
+          href={localizeStorefrontUrl('/')}
+          target="_top"
         >
           <img src={logo} alt="logo" />
         </ImageListItem>

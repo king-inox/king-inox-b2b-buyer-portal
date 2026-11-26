@@ -1,10 +1,11 @@
 import { b2bCheckoutLogin } from '@/shared/service/b2b/graphql/checkout';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 const redirect = (url: string, isReplaceCurrentUrl?: boolean) => {
   if (isReplaceCurrentUrl) {
-    window.location.replace(url);
+    window.location.replace(localizeStorefrontUrl(url));
   } else {
-    window.location.href = url;
+    window.location.href = localizeStorefrontUrl(url);
   }
 };
 

@@ -4,6 +4,7 @@ import { getInvoiceCheckoutUrl } from '@/shared/service/b2b';
 import { BcCartData } from '@/types/invoice';
 import { attemptCheckoutLoginAndRedirect } from '@/utils/b3checkout';
 import b2bLogger from '@/utils/b3Logger';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 const getCheckoutUrlAndCart = async (params: BcCartData) => {
   const {
@@ -26,9 +27,9 @@ export const gotoInvoiceCheckoutUrl = async (
   const { checkoutUrl, cartId } = await getCheckoutUrlAndCart(params);
   const handleStencil = () => {
     if (isReplaceCurrentUrl) {
-      window.location.replace(checkoutUrl);
+      window.location.replace(localizeStorefrontUrl(checkoutUrl));
     } else {
-      window.location.href = checkoutUrl;
+      window.location.href = localizeStorefrontUrl(checkoutUrl);
     }
   };
 
@@ -38,7 +39,7 @@ export const gotoInvoiceCheckoutUrl = async (
   }
 
   if (platform === 'catalyst') {
-    window.location.assign(`/checkout?cartId=${cartId}`);
+    window.location.assign(localizeStorefrontUrl(`/checkout?cartId=${cartId}`));
     return;
   }
 

@@ -1,5 +1,7 @@
 import { Box, ImageListItem } from '@mui/material';
 
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
+
 const LOGO_CONTAINER_SX = {
   display: 'flex',
   flexDirection: 'column',
@@ -21,9 +23,9 @@ export function Logo({ logoUrl, logoAlt }: LogoProps) {
         sx={{
           maxWidth: '250px',
         }}
-        onClick={() => {
-          window.location.href = '/';
-        }}
+        component="a"
+        href={localizeStorefrontUrl('/')}
+        target="_top"
       >
         <img src={logoUrl} alt={logoAlt} loading="lazy" />
       </ImageListItem>

@@ -41,6 +41,7 @@ import {
   catalogListHasBackorderedItemsForDisplay,
   getCatalogProductRowDisplayState,
 } from '@/utils/catalogBackorderDisplay';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 import B3FilterSearch from '../../../components/filter/B3FilterSearch';
 
@@ -587,7 +588,7 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
                     location: { origin },
                   } = window;
 
-                  window.location.href = `${origin}${row.productUrl}`;
+                  window.location.href = localizeStorefrontUrl(`${origin}${row.productUrl}`);
                 }}
                 sx={{
                   cursor: 'pointer',

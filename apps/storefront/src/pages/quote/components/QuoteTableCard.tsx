@@ -6,6 +6,7 @@ import { useB3Lang } from '@/lib/lang';
 import { QuoteItem } from '@/types/quotes';
 import { getBCPrice, getDisplayPrice } from '@/utils/b3Product/b3Product';
 import { getProductOptionsFields } from '@/utils/b3Product/shared/config';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 import {
   draftRowQuantityExceedsAvailableToSell,
@@ -109,7 +110,9 @@ function QuoteTableCard({
             color="#212121"
             onClick={() => {
               if (productUrl) {
-                window.location.href = `${window.location.origin}${productUrl}`;
+                window.location.href = localizeStorefrontUrl(
+                  `${window.location.origin}${productUrl}`,
+                );
               }
             }}
             sx={{

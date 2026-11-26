@@ -14,6 +14,7 @@ import { useAppSelector } from '@/store';
 import { snackbar } from '@/utils/b3Tip';
 import b3TriggerCartNumber from '@/utils/b3TriggerCartNumber';
 import { createOrUpdateExistingCart } from '@/utils/cartUtils';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 import {
   VALIDATED_PRODUCT_ERROR_TYPES,
   ValidatedProductError,
@@ -359,7 +360,7 @@ export default function QuickAdd() {
           label: b3Lang('purchasedProducts.quickOrderPad.viewCart'),
           onClick: () => {
             if (window.b2b.callbacks.dispatchEvent('on-click-cart-button')) {
-              window.location.href = CART_URL;
+              window.location.href = localizeStorefrontUrl(CART_URL);
             }
           },
         },

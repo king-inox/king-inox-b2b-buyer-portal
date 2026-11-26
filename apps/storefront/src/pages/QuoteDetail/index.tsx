@@ -28,6 +28,7 @@ import { getBCPrice, getVariantInfoOOSAndPurchase } from '@/utils/b3Product/b3Pr
 import { conversionProductsList } from '@/utils/b3Product/shared/config';
 import { snackbar } from '@/utils/b3Tip';
 import { buildCurrenciesMap } from '@/utils/currencyUtils';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 import { getSearchVal } from '@/utils/loginInfo';
 import {
   VALIDATED_PRODUCT_ERROR_TYPES,
@@ -906,7 +907,9 @@ function QuoteDetail() {
         quoteDetail.createdAt,
         shippingTerms,
       );
-      window.location.assign(getOrderConfirmationUrl(orderId, window.location.pathname));
+      window.location.assign(
+        localizeStorefrontUrl(getOrderConfirmationUrl(orderId, window.location.pathname)),
+      );
       return true;
     } catch {
       snackbar.error(b3Lang('quoteDetail.convertToOrder.error'));

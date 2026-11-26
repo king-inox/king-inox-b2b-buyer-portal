@@ -15,6 +15,7 @@ import { CompanyStatus } from '@/types';
 import { OpenPageState } from '@/types/hooks';
 import { B3SStorage } from '@/utils/b3Storage';
 import { globalSnackbar } from '@/utils/b3Tip';
+import { stripStorefrontLanguagePrefix } from '@/utils/localizeStorefrontUrl';
 
 import { useGetButtonText } from '../useGetButtonText';
 import useStorageState from '../useStorageState';
@@ -61,9 +62,11 @@ const useCartToQuote = ({ setOpenPage, cartQuoteEnabled }: MutationObserverProps
   const companyStatus = useAppSelector(({ company }) => company.companyInfo.status);
   const blockPendingAccountOrderCreation = B3SStorage.get('blockPendingAccountOrderCreation');
 
-  const checkIsInPage = (url: string) => window.location.href.includes(url);
+  const checkIsInPage = (url: string) =>
+    stripStorefrontLanguagePrefix(new URL(window.location.href).pathname) ===
+    stripStorefrontLanguagePrefix(new URL(url, window.location.href).pathname);
 
-  const { pathname } = window.location;
+  const pathname = stripStorefrontLanguagePrefix(window.location.pathname);
 
   useEffect(() => {
     if (checkIsInPage(CHECKOUT_URL) && companyStatus === CompanyStatus.REJECTED) {
@@ -73,7 +76,7 @@ const useCartToQuote = ({ setOpenPage, cartQuoteEnabled }: MutationObserverProps
 
   useEffect(() => {
     const showPendingAccountTip = () => {
-      if (![CART_URL, CHECKOUT_URL].includes(pathname)) return;
+      if (![CART_URL, CHECKOUT_URL].some(checkIsInPage)) return;
 
       if (companyStatus || !blockPendingAccountOrderCreation) return;
 

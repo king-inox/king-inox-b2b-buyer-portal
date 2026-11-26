@@ -51,6 +51,7 @@ import { snackbar } from '@/utils/b3Tip';
 import { channelId, storeHash } from '@/utils/basicConfig';
 import { deleteCartData } from '@/utils/cartUtils';
 import { formatBcCurrencyToDisplayCurrency } from '@/utils/currencyUtils';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 import validateObject from '@/utils/quoteUtils';
 
 import { getProductOptionsFields } from '../../utils/b3Product/shared/config';
@@ -552,7 +553,9 @@ function QuoteDraft({ setOpenPage }: PageProps) {
       shippingTerms,
     );
     handleReset();
-    window.location.assign(getOrderConfirmationUrl(orderId, window.location.pathname));
+    window.location.assign(
+      localizeStorefrontUrl(getOrderConfirmationUrl(orderId, window.location.pathname)),
+    );
     return true;
   };
 

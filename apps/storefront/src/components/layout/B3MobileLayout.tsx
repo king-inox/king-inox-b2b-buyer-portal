@@ -6,6 +6,7 @@ import { CART_URL } from '@/constants';
 import { useB3Lang } from '@/lib/lang';
 import { CustomStyleContext } from '@/shared/customStyleButton';
 import { isB2BUserSelector, rolePermissionSelector, useAppSelector } from '@/store';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 import CompanyCredit from '../CompanyCredit';
 import { getContrastColor } from '../outSideComponents/utils/b3CustomStyles';
@@ -110,7 +111,7 @@ export default function B3MobileLayout({
               <ShoppingBagOutlined
                 sx={{ color: 'rgba(0, 0, 0, 0.54)', marginRight: '-0.5rem' }}
                 onClick={() => {
-                  window.location.href = CART_URL;
+                  window.location.href = localizeStorefrontUrl(CART_URL);
                 }}
               />
             </Badge>

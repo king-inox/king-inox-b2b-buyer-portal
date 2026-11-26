@@ -6,6 +6,7 @@ import { endUserMasqueradingCompany, superAdminEndMasquerade } from '@/shared/se
 import { bcLogoutLogin } from '@/shared/service/bc';
 import { isLoggedInSelector, store, useAppSelector } from '@/store';
 import { clearCompanySlice } from '@/store/slices/company';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 const logout = () => {
   return bcLogoutLogin().then((res) => {
@@ -50,7 +51,7 @@ export function CatalystLogin() {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      window.location.href = '/login';
+      window.location.href = localizeStorefrontUrl('/login');
     }, 3000);
 
     return () => {

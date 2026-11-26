@@ -5,6 +5,7 @@ import config from '@/lib/config';
 import { useAppSelector } from '@/store';
 import { CustomerRole } from '@/types';
 import { OpenPageState } from '@/types/hooks';
+import { stripStorefrontLanguagePrefix } from '@/utils/localizeStorefrontUrl';
 
 import useMutationObservable from './useMutationObservable';
 
@@ -65,7 +66,7 @@ const useB3AppOpen = (initOpenState: OpenPageState) => {
   };
 
   const handleJudgeCheckoutNormalHref = (element: MouseEvent) => {
-    if (window?.location?.pathname !== CHECKOUT_URL) return false;
+    if (stripStorefrontLanguagePrefix(window.location.pathname) !== CHECKOUT_URL) return false;
 
     const target = element.target as HTMLAnchorElement;
 

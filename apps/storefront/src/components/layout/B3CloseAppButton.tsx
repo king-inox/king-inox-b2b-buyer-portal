@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMobile } from '@/hooks/useMobile';
 import { GlobalContext } from '@/shared/global';
 import { useAppSelector } from '@/store';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 import { CloseBox, CloseBoxMobile, CloseButton } from '../styled';
 
@@ -19,7 +20,7 @@ export default function B3CloseAppButton() {
 
   const handleCloseForm = () => {
     if (isCloseGotoBCHome || window.location.search.includes('action=order_status')) {
-      window.location.href = '/';
+      window.location.href = localizeStorefrontUrl('/');
     } else {
       navigate('/');
       setOpenPageFn?.({

@@ -16,6 +16,7 @@ import b2bLogger from '@/utils/b3Logger';
 import { snackbar } from '@/utils/b3Tip';
 import b3TriggerCartNumber from '@/utils/b3TriggerCartNumber';
 import { createOrUpdateExistingCart } from '@/utils/cartUtils';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 import { addCartProductToVerify } from '../utils';
 
@@ -46,7 +47,7 @@ export default function QuickOrderPad() {
           label: b3Lang('purchasedProducts.quickOrderPad.viewCart'),
           onClick: () => {
             if (window.b2b.callbacks.dispatchEvent('on-click-cart-button')) {
-              window.location.href = CART_URL;
+              window.location.href = localizeStorefrontUrl(CART_URL);
             }
           },
         },
@@ -67,7 +68,7 @@ export default function QuickOrderPad() {
           label: b3Lang('purchasedProducts.quickOrderPad.viewCart'),
           onClick: () => {
             if (window.b2b.callbacks.dispatchEvent('on-click-cart-button')) {
-              window.location.href = CART_URL;
+              window.location.href = localizeStorefrontUrl(CART_URL);
             }
           },
         },
@@ -215,7 +216,7 @@ export default function QuickOrderPad() {
             action: {
               label: b3Lang('purchasedProducts.quickOrderPad.downloadErrorsCSV'),
               onClick: () => {
-                window.location.href = stockErrorFile;
+                window.location.href = localizeStorefrontUrl(stockErrorFile);
               },
             },
           },
@@ -287,7 +288,7 @@ export default function QuickOrderPad() {
             action: {
               label: b3Lang('purchasedProducts.quickOrderPad.downloadErrorsCSV'),
               onClick: () => {
-                window.location.href = stockErrorFile;
+                window.location.href = localizeStorefrontUrl(stockErrorFile);
               },
             },
           },
@@ -382,7 +383,7 @@ export default function QuickOrderPad() {
               action: {
                 label: b3Lang('purchasedProducts.quickOrderPad.downloadErrorsCSV'),
                 onClick: () => {
-                  window.location.href = stockErrorFile;
+                  window.location.href = localizeStorefrontUrl(stockErrorFile);
                 },
               },
             });

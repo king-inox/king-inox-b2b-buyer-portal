@@ -25,6 +25,7 @@ import { snackbar } from '@/utils/b3Tip';
 import b3TriggerCartNumber from '@/utils/b3TriggerCartNumber';
 import { BigCommerceStorefrontAPIBaseURL } from '@/utils/basicConfig';
 import { createOrUpdateExistingCart } from '@/utils/cartUtils';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 import {
   VALIDATED_PRODUCT_ERROR_TYPES,
   validateProductsLegacy as rawValidateProducts,
@@ -140,7 +141,7 @@ export default function OrderDialog({
         label: b3Lang('orderDetail.viewCart'),
         onClick: () => {
           if (window.b2b.callbacks.dispatchEvent('on-click-cart-button')) {
-            window.location.href = CART_URL;
+            window.location.href = localizeStorefrontUrl(CART_URL);
           }
         },
       },
@@ -280,7 +281,7 @@ export default function OrderDialog({
         label: b3Lang('orderDetail.viewCart'),
         onClick: () => {
           if (window.b2b.callbacks.dispatchEvent('on-click-cart-button')) {
-            window.location.href = CART_URL;
+            window.location.href = localizeStorefrontUrl(CART_URL);
           }
         },
       },

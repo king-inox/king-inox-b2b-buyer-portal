@@ -1,5 +1,7 @@
 import { type NavigateFunction } from 'react-router-dom';
 
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
+
 export function navigateAfterSuccessfulLogin(
   navigate: NavigateFunction,
   quoteDetailToCheckoutUrl: string,
@@ -10,5 +12,5 @@ export function navigateAfterSuccessfulLogin(
     return;
   }
 
-  window.location.assign(redirectUrl);
+  window.location.assign(localizeStorefrontUrl(redirectUrl));
 }

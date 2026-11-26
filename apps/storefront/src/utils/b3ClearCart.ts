@@ -4,13 +4,14 @@ import { CHECKOUT_URL } from '@/constants';
 import { deleteCart, getCart } from '@/shared/service/bc/graphql/cart';
 import { store } from '@/store';
 import { setCartNumber } from '@/store/slices/global';
+import { stripStorefrontLanguagePrefix } from '@/utils/localizeStorefrontUrl';
 
 import b2bLogger from './b3Logger';
 import { deleteCartData } from './cartUtils';
 
 const clearInvoiceCart = async () => {
   try {
-    const url = window.location.pathname;
+    const url = stripStorefrontLanguagePrefix(window.location.pathname);
     const isInvoicePay = localStorage.getItem('invoicePay');
 
     if (url !== CHECKOUT_URL && isInvoicePay === '1') {

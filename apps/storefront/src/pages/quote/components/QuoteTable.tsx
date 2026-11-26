@@ -20,6 +20,7 @@ import {
 } from '@/utils/b3Product/b3Product';
 import { getProductOptionsFields } from '@/utils/b3Product/shared/config';
 import { snackbar } from '@/utils/b3Tip';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 import ChooseOptionsDialog from '../../ShoppingListDetails/components/ChooseOptionsDialog';
 import {
@@ -367,7 +368,9 @@ function QuoteTable({ total, items, formattedTotal, packagingByVariantId = {} }:
                 color="#212121"
                 onClick={() => {
                   if (productUrl) {
-                    window.location.href = `${window.location.origin}${productUrl}`;
+                    window.location.href = localizeStorefrontUrl(
+                      `${window.location.origin}${productUrl}`,
+                    );
                   }
                 }}
                 sx={{
@@ -590,8 +593,8 @@ function QuoteTable({ total, items, formattedTotal, packagingByVariantId = {} }:
             fontSize: '24px',
           }}
         >
-          <span>{b3Lang('quoteDraft.quoteTable.totalProducts', { total: total || 0 })}</span>{' '}
-          ({b3Lang('quoteDraft.quoteTable.total')} {formattedTotal})
+          <span>{b3Lang('quoteDraft.quoteTable.totalProducts', { total: total || 0 })}</span> (
+          {b3Lang('quoteDraft.quoteTable.total')} {formattedTotal})
         </Typography>
         {showBackorderToggle && (
           <FormControlLabel

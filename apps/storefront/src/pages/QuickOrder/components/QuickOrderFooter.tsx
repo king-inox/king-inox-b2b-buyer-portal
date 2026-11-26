@@ -33,6 +33,7 @@ import { conversionProductsList } from '@/utils/b3Product/shared/config';
 import { snackbar } from '@/utils/b3Tip';
 import b3TriggerCartNumber from '@/utils/b3TriggerCartNumber';
 import { createOrUpdateExistingCart } from '@/utils/cartUtils';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 import {
   convertStockAndThresholdValidationErrorToWarning,
   validateProductsLegacy,
@@ -186,7 +187,7 @@ function QuickOrderFooter(props: QuickOrderFooterProps) {
         label: b3Lang('purchasedProducts.footer.viewCart'),
         onClick: () => {
           if (window.b2b.callbacks.dispatchEvent('on-click-cart-button')) {
-            window.location.href = CART_URL;
+            window.location.href = localizeStorefrontUrl(CART_URL);
           }
         },
       },

@@ -9,6 +9,7 @@ import { useB3Lang } from '@/lib/lang';
 import { CustomStyleContext } from '@/shared/customStyleButton';
 import { isB2BUserSelector, rolePermissionSelector, useAppSelector } from '@/store';
 import b3TriggerCartNumber from '@/utils/b3TriggerCartNumber';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 
 import { getContrastColor } from '../outSideComponents/utils/b3CustomStyles';
 
@@ -50,7 +51,7 @@ export default function MainHeader({ title }: { title: string }) {
       return;
     }
 
-    window.location.href = CART_URL;
+    window.location.href = localizeStorefrontUrl(CART_URL);
   };
 
   useEffect(() => {
@@ -121,7 +122,7 @@ export default function MainHeader({ title }: { title: string }) {
                 fontSize: '16px',
               }}
               onClick={() => {
-                window.location.href = '/';
+                window.location.href = localizeStorefrontUrl('/');
               }}
             >
               {b3Lang('global.B3MainHeader.home')}

@@ -16,6 +16,7 @@ import b2bLogger from '@/utils/b3Logger';
 import { loginJump } from '@/utils/b3Login';
 import { B3SStorage } from '@/utils/b3Storage';
 import { platform } from '@/utils/basicConfig';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 import { getCurrentCustomerInfo } from '@/utils/loginInfo';
 
 import { loginCheckout, LoginConfig } from '../Login/helper';
@@ -134,7 +135,7 @@ function Registered(props: PageProps) {
         if (!isLoginLandLocation) return;
 
         if (isCloseGotoBCHome) {
-          window.location.href = '/';
+          window.location.href = localizeStorefrontUrl('/');
         } else {
           navigate('/orders');
         }
@@ -172,7 +173,7 @@ function Registered(props: PageProps) {
                     maxWidth: '250px',
                   }}
                   onClick={() => {
-                    window.location.href = '/';
+                    window.location.href = localizeStorefrontUrl('/');
                   }}
                 >
                   <img src={logo} alt={b3Lang('global.tips.registerLogo')} loading="lazy" />

@@ -11,6 +11,7 @@ import { CustomStyleContext } from '@/shared/customStyleButton';
 import { useAppSelector } from '@/store';
 import b2bLogger from '@/utils/b3Logger';
 import { loginJump } from '@/utils/b3Login';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 import {
   AccountFormFieldsItems,
   deCodeField,
@@ -175,7 +176,7 @@ export function Register({ logo, ...props }: RegisterProps) {
     if (shouldAutoLogin) {
       navigate('/orders');
     } else {
-      window.location.href = '/';
+      window.location.href = localizeStorefrontUrl('/');
     }
   };
 

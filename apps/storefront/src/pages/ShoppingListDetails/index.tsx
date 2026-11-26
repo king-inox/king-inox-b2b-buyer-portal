@@ -59,6 +59,7 @@ import {
   deleteCartData,
   updateCart as rawUpdateCart,
 } from '@/utils/cartUtils';
+import { localizeStorefrontUrl } from '@/utils/localizeStorefrontUrl';
 import {
   convertStockAndThresholdValidationErrorToWarning,
   validateProducts,
@@ -469,14 +470,14 @@ function ShoppingListDetails({ setOpenPage }: PageProps) {
       submitShoppingListPermission &&
       shoppingListInfo?.status === ShoppingListStatus.Approved
     ) {
-      window.location.href = CHECKOUT_URL;
+      window.location.href = localizeStorefrontUrl(CHECKOUT_URL);
     } else {
       snackbar.success(b3Lang('shoppingList.footer.productsAddedToCart'), {
         action: {
           label: b3Lang('shoppingList.footer.viewCart'),
           onClick: () => {
             if (window.b2b.callbacks.dispatchEvent('on-click-cart-button')) {
-              window.location.href = CART_URL;
+              window.location.href = localizeStorefrontUrl(CART_URL);
             }
           },
         },
@@ -715,14 +716,14 @@ function ShoppingListDetails({ setOpenPage }: PageProps) {
       b2bSubmitShoppingListPermission &&
       shoppingListInfo?.status === ShoppingListStatus.Approved
     ) {
-      window.location.href = CHECKOUT_URL;
+      window.location.href = localizeStorefrontUrl(CHECKOUT_URL);
     } else {
       snackbar.success(b3Lang('shoppingList.footer.productsAddedToCart'), {
         action: {
           label: b3Lang('shoppingList.footer.viewCart'),
           onClick: () => {
             if (window.b2b.callbacks.dispatchEvent('on-click-cart-button')) {
-              window.location.href = CART_URL;
+              window.location.href = localizeStorefrontUrl(CART_URL);
             }
           },
         },
