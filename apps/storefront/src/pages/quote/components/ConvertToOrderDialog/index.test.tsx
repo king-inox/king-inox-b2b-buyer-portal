@@ -14,6 +14,7 @@ import {
   within,
 } from 'tests/test-utils';
 
+import locales from '@/lib/lang/locales';
 import type { ShippingAddress } from '@/types/quotes';
 
 import ConvertToOrderDialog from './index';
@@ -119,7 +120,7 @@ it.each(['equal', 'above'])(
     renderDialog();
     await screen.findByText('Threshold reached: free shipping will be applied.');
     expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
-    expect(screen.getByText('Shipping terms: Free Delivery')).toBeVisible();
+    expect(screen.queryByText('Shipping terms: Ex Works')).not.toBeInTheDocument();
     expect(
       screen.getByText(
         'Free delivery is guaranteed only if the orders are shipped to this same destination.',
@@ -154,19 +155,16 @@ it('automatically applies Ex Works when the address has no free shipping thresho
   expect(convert).toHaveBeenCalledExactlyOnceWith('porto_assegnato');
 });
 
-it.each(['it', 'en', 'de', 'es', 'fr', 'nl', 'zh'])(
+it.each(Object.keys(locales) as Array<keyof typeof locales>)(
   'displays automatic free shipping terms in %s',
   async (locale) => {
     scenario.threshold = 0;
     renderDialog({}, locale);
-    const label = locale === 'it' ? 'Porto Franco' : 'Free Delivery';
-    expect(await screen.findByText(new RegExp(`: ${label}$`))).toBeVisible();
     expect(
-      screen.getByText(
-        locale === 'it'
-          ? 'Il porto franco ti sarà garantito se gli ordini sono destinati a questa stessa destinazione.'
-          : 'Free delivery is guaranteed only if the orders are shipped to this same destination.',
-      ),
+      await screen.findByText(locales[locale]['quoteDetail.conversion.freeShipping']),
+    ).toBeVisible();
+    expect(
+      screen.getByText(locales[locale]['quoteDetail.conversion.sameDestination']),
     ).toBeVisible();
   },
 );

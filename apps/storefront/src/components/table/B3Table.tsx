@@ -144,6 +144,7 @@ function Row<Row>({
   CollapseComponent,
   applyAllDisableCheckbox,
 }: RowProps<Row>) {
+  const b3Lang = useB3Lang();
   const { isCollapse = false, disableCurrentCheckbox } = node;
 
   const [open, setOpen] = useState<boolean>(isCollapse || false);
@@ -179,7 +180,11 @@ function Row<Row>({
 
         {CollapseComponent && (
           <TableCell>
-            <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+            <IconButton
+              aria-label={b3Lang('global.controls.expandRow')}
+              size="small"
+              onClick={() => setOpen(!open)}
+            >
               {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
             </IconButton>
           </TableCell>
@@ -313,7 +318,7 @@ export function B3Table<Row>({
                 onChange={handleSelectAllItems}
                 disabled={disableCheckbox}
               />
-              Select all
+              {b3Lang('global.selection.selectAll')}
             </Box>
           )}
           <Grid container spacing={itemIsMobileSpacing}>

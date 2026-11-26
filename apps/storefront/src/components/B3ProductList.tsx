@@ -621,7 +621,7 @@ export function B3ProductList<T>(props: ProductProps<T>) {
                 </Box>
               ) : (
                 <>
-                  {isMobile && <span>Qty: </span>}
+                  {isMobile && <span>{b3Lang('global.searchProduct.qty')}: </span>}
                   {quantity}
                 </>
               )}

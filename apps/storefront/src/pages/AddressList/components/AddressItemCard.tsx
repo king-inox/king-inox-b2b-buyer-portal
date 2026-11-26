@@ -133,7 +133,11 @@ export function AddressItemCard({
               )} */}
 
               {onDelete && (
-                <IconButton aria-label="delete" size="small" onClick={onDelete}>
+                <IconButton
+                  aria-label={b3Lang('shoppingLists.delete')}
+                  size="small"
+                  onClick={onDelete}
+                >
                   <DeleteIcon fontSize="inherit" />
                 </IconButton>
               )}

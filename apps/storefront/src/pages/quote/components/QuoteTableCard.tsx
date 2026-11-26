@@ -145,7 +145,8 @@ function QuoteTableCard({
           </Box>
 
           <Typography>
-            Misura: {getPackagingMetafieldValue(item, 'MISURA', packagingByVariantId)}
+            {b3Lang('quoteDetail.table.measure')}:{' '}
+            {getPackagingMetafieldValue(item, 'MISURA', packagingByVariantId)}
           </Typography>
           <Box sx={{ marginBottom: '1rem' }}>
             {packagingColumns.map((field) => (
@@ -165,14 +166,16 @@ function QuoteTableCard({
             ))}
           </Box>
 
-          <Typography sx={{ fontSize: '14px' }}>Price: {singlePrice}</Typography>
+          <Typography sx={{ fontSize: '14px' }}>
+            {b3Lang('quoteDraft.quoteTable.price')}: {singlePrice}
+          </Typography>
 
           <>
             <TextField
               size="small"
               type="number"
               variant="filled"
-              label="qty"
+              label={b3Lang('global.searchProduct.qty')}
               inputProps={{
                 inputMode: 'numeric',
                 pattern: '[0-9]*',
@@ -207,7 +210,9 @@ function QuoteTableCard({
               </Box>
             )}
           </>
-          <Typography sx={{ fontSize: '14px' }}>Total: {totalPrice}</Typography>
+          <Typography sx={{ fontSize: '14px' }}>
+            {b3Lang('quoteDraft.quoteTable.total')}: {totalPrice}
+          </Typography>
           <Box
             sx={{
               marginTop: '1rem',

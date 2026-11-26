@@ -30,6 +30,7 @@ function SelectedBadge() {
 }
 
 export function DashboardCard({ companyName, email, isSelected, action }: DashboardCardProps) {
+  const b3Lang = useB3Lang();
   return (
     <Card>
       <CardContent
@@ -62,7 +63,7 @@ export function DashboardCard({ companyName, email, isSelected, action }: Dashbo
               fontWeight: 500,
             }}
           >
-            Email:
+            {b3Lang('dashboard.email')}:
           </Typography>
           <Typography variant="body1">{email}</Typography>
         </Box>

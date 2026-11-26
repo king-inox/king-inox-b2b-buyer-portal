@@ -51,14 +51,21 @@ function LangProvider({ children, customText = {} }: LangProviderProps) {
   } = useContext(GlobalContext);
   const translations = useSelector<RootState, Translations>(({ lang }) => lang.translations);
   const availableLocales = useSelector<RootState, Locales>(({ global }) => global.locales);
-  const activeLocaleCode = getActiveLocaleCode(availableLocales) ?? bcLanguage ?? 'en';
+  const proxyLocaleCode = document.documentElement.dataset.proxyLanguage;
+  const activeLocaleCode =
+    proxyLocaleCode ?? getActiveLocaleCode(availableLocales) ?? bcLanguage ?? 'en';
   const normalizedLocaleCode = activeLocaleCode.split('-')[0];
-  const localizedMessages = locales[normalizedLocaleCode as keyof typeof locales] ?? {};
-  const localeMessages = { ...locales.en, ...localizedMessages };
+  const localizedMessages = locales[normalizedLocaleCode as keyof typeof locales];
+  if (!localizedMessages) {
+    throw new Error(`Unsupported Buyer Portal locale: ${normalizedLocaleCode}`);
+  }
+  const localeMessages = localizedMessages;
   // Channel customizations are not locale-specific, including persisted API translations.
   // In a multilingual channel, even the default locale may differ from their content language.
   const useChannelCustomizations =
-    availableLocales.length <= 1 && normalizedLocaleCode === (bcLanguage ?? 'en').split('-')[0];
+    !proxyLocaleCode &&
+    availableLocales.length <= 1 &&
+    normalizedLocaleCode === (bcLanguage ?? 'en').split('-')[0];
   const messages = useChannelCustomizations
     ? { ...localeMessages, ...customText, ...translations }
     : localeMessages;

@@ -271,7 +271,7 @@ function CompanyHierarchyTableTree<T extends TreeNodeProps>({
       ) : (
         <Paper sx={{ width: '100%', minHeight: '100px', mx: 'auto', mt: 2 }}>
           <TableContainer>
-            <Table size="small" aria-label="company structure table">
+            <Table size="small" aria-label={b3Lang('global.controls.companyStructureTable')}>
               <TableHead>
                 <TableRow sx={{ height: '3.25rem' }}>
                   <TableCell sx={{ fontWeight: 500, pl: 8 }}>

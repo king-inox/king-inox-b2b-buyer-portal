@@ -133,7 +133,7 @@ function QuickOrderCard(props: QuickOrderCardProps) {
               size="small"
               type="number"
               variant="filled"
-              label="Qty"
+              label={b3Lang('global.searchProduct.qty')}
               inputProps={{
                 inputMode: 'numeric',
                 pattern: '[0-9]*',

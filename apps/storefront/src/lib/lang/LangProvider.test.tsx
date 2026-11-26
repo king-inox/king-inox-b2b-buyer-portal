@@ -42,6 +42,7 @@ function TestOrders() {
 describe('LangProvider', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+    delete document.documentElement.dataset.proxyLanguage;
   });
 
   it('uses italian locale messages when the active locale is it', () => {
@@ -105,6 +106,29 @@ describe('LangProvider', () => {
     );
 
     expect(screen.getAllByText(expectedLabel)).toHaveLength(2);
+    expect(screen.queryByText('I miei ordini')).not.toBeInTheDocument();
+  });
+
+  it('uses the proxy locale ahead of BigCommerce and channel customizations', () => {
+    document.documentElement.dataset.proxyLanguage = 'pt';
+    const store = setupStore({
+      global: buildGlobalWith({ locales: [] }),
+      lang: buildLangWith({ translations: { 'global.navMenu.orders': 'I miei ordini' } }),
+    });
+
+    render(
+      <GlobalContext.Provider
+        value={{ state: { ...initState, bcLanguage: 'it' }, dispatch: vi.fn() }}
+      >
+        <Provider store={store}>
+          <LangProvider customText={{ 'global.orders.title': 'I miei ordini' }}>
+            <TestOrders />
+          </LangProvider>
+        </Provider>
+      </GlobalContext.Provider>,
+    );
+
+    expect(screen.getAllByText(/(?:Meus pedidos|Minhas encomendas)/)).toHaveLength(2);
     expect(screen.queryByText('I miei ordini')).not.toBeInTheDocument();
   });
 

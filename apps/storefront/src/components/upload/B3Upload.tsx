@@ -6,6 +6,7 @@ import { Alert, Box, Link, useTheme } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 
 import { useMobile } from '@/hooks/useMobile';
+import { useB3Lang } from '@/lib/lang';
 import { ValidProductItem } from '@/pages/QuickOrder/components/ValidProduct';
 import {
   B2BProductsBulkUploadCSV,
@@ -61,6 +62,7 @@ const FileUploadContainer = styled(Box)({
 });
 
 export function B3Upload(props: B3UploadProps) {
+  const b3Lang = useB3Lang();
   const {
     isOpen,
     setIsOpen,
@@ -279,7 +281,7 @@ export function B3Upload(props: B3UploadProps) {
                 color: '#5E637A',
               }}
             >
-              Drag & drop file here
+              {b3Lang('global.bulkUpload.dropFile')}
             </Box>
           </Grid>
         </div>
@@ -301,7 +303,7 @@ export function B3Upload(props: B3UploadProps) {
               whiteSpace: 'nowrap',
             }}
           >
-            File types: CSV, maximum size: 50MB.
+            {b3Lang('global.bulkUpload.fileTypes')}
           </Box>
           <Box
             sx={{
@@ -319,14 +321,14 @@ export function B3Upload(props: B3UploadProps) {
                 pointerEvents: 'auto',
               }}
             >
-              Download sample
+              {b3Lang('global.bulkUpload.downloadSample')}
             </Link>
           </Box>
         </Grid>
 
         <Grid display="flex" justifyContent="center" xs={12}>
           <CustomButton variant="outlined" onClick={openFile} sx={{ pointerEvents: 'auto' }}>
-            Upload file
+            {b3Lang('global.bulkUpload.uploadFile')}
           </CustomButton>
         </Grid>
       </Grid>

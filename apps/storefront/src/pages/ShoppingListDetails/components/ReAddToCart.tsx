@@ -437,7 +437,7 @@ export default function ReAddToCart({
                       </Box>
                     </FlexItem>
                     <FlexItem {...itemStyle.default} textAlignLocation={textAlign}>
-                      {isMobile && <span>Price: </span>}
+                      {isMobile && <span>{b3Lang('shoppingList.reAddToCart.price')}: </span>}
                       {currencyFormat(price)}
                     </FlexItem>
                     <FlexItem {...desktopQtyColumnStyle} textAlignLocation={textAlign}>
@@ -483,7 +483,7 @@ export default function ReAddToCart({
                       </Box>
                     </FlexItem>
                     <FlexItem {...itemStyle.default} textAlignLocation={textAlign}>
-                      {isMobile && <div>Total: </div>}
+                      {isMobile && <div>{b3Lang('shoppingList.reAddToCart.total')}: </div>}
                       {currencyFormat(total)}
                     </FlexItem>
 

@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 import { B3Tag } from '@/components/B3Tag';
+import { useB3Lang } from '@/lib/lang';
 import { verifyLevelPermission } from '@/utils/b3CheckPermissions/check';
 import { b2bPermissionsMap } from '@/utils/b3CheckPermissions/config';
 
@@ -48,6 +49,7 @@ const Flex = styled('div')(() => ({
 }));
 
 export function UserItemCard(props: OrderItemCardProps) {
+  const b3Lang = useB3Lang();
   const { item: userInfo, onEdit, onDelete } = props;
   const { companyInfo, id, companyRoleName, firstName, lastName, email } = userInfo;
 
@@ -141,7 +143,7 @@ export function UserItemCard(props: OrderItemCardProps) {
           <Box>
             {updateActionsPermission && (
               <IconButton
-                aria-label="edit"
+                aria-label={b3Lang('global.controls.edit')}
                 size="small"
                 sx={{
                   marginRight: '8px',
@@ -152,7 +154,11 @@ export function UserItemCard(props: OrderItemCardProps) {
               </IconButton>
             )}
             {deleteActionsPermission && (
-              <IconButton aria-label="delete" size="small" onClick={() => onDelete(userInfo.id)}>
+              <IconButton
+                aria-label={b3Lang('shoppingLists.delete')}
+                size="small"
+                onClick={() => onDelete(userInfo.id)}
+              >
                 <DeleteIcon fontSize="inherit" />
               </IconButton>
             )}

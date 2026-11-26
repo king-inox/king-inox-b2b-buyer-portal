@@ -235,7 +235,7 @@ export default function ProductListDialog(props: ProductListDialogProps) {
               actionWidth="180px"
             />
           ) : (
-            <Typography>No products found</Typography>
+            <Typography>{b3Lang('shoppingList.table.noProductsFound')}</Typography>
           )}
         </Box>
       </B3Spin>

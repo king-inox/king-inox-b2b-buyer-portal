@@ -18,7 +18,23 @@ const getActiveLocale = (locales: Locales) =>
 
 export default function B3LocaleSwitcher() {
   const isMultiLocaleEnabled = useFeatureFlag('LOCAL-3191.B2B_multi_language');
-  const locales = useAppSelector(({ global }) => global.locales);
+  const nativeLocales = useAppSelector(({ global }) => global.locales);
+  const proxyLinks = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>('[data-proxy-language-link]'),
+  );
+  const locales: Locales = [
+    ...nativeLocales.map((locale) => ({
+      ...locale,
+      fullPath: proxyLinks.length
+        ? new URL(new URL(locale.fullPath).pathname, window.location.origin).href.replace(/\/$/, '')
+        : locale.fullPath,
+    })),
+    ...proxyLinks.map((link) => ({
+      code: link.dataset.languageCode!,
+      isDefault: false,
+      fullPath: new URL(`/${link.dataset.languageCode}`, window.location.origin).href,
+    })),
+  ];
 
   if (!isMultiLocaleEnabled || locales.length <= 1) {
     return null;
@@ -31,7 +47,10 @@ export default function B3LocaleSwitcher() {
   const handleLocaleChange = (code: string | number) => {
     const nextLocale = locales.find((l) => l.code === String(code));
     if (nextLocale && nextLocale.fullPath !== activeLocale.fullPath) {
-      window.location.href = nextLocale.fullPath + window.location.hash;
+      const proxyLink = proxyLinks.find((link) => link.dataset.languageCode === String(code));
+      const destination = new URL(proxyLink ? proxyLink.href : nextLocale.fullPath);
+      destination.hash = window.location.hash;
+      window.location.href = destination.href;
     }
   };
 

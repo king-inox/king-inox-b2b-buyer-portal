@@ -186,7 +186,7 @@ export default function OrderCheckboxProduct(props: OrderCheckboxProductProps) {
 
       {isMobile && (
         <FormControlLabel
-          label="Select all products"
+          label={b3Lang('global.controls.selectAllProducts')}
           control={
             <Checkbox
               checked={checkedArr.length === products.length}

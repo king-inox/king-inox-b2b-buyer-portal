@@ -1,11 +1,14 @@
 import { Box, Typography } from '@mui/material';
 
+import { useB3Lang } from '@/lib/lang';
+
 interface BulkUploadTableCardProps {
   products: CustomFieldItems;
   activeTab: string;
 }
 
 function BulkUploadTableCard(props: BulkUploadTableCardProps) {
+  const b3Lang = useB3Lang();
   const { products, activeTab } = props;
 
   const lineItemStyle = {
@@ -32,7 +35,7 @@ function BulkUploadTableCard(props: BulkUploadTableCardProps) {
             paddingRight: '0.5rem',
           }}
         >
-          SKU:{' '}
+          {b3Lang('global.bulkUpload.sku')}:{' '}
         </Typography>
         <span>{products.sku}</span>
       </Box>
@@ -45,7 +48,7 @@ function BulkUploadTableCard(props: BulkUploadTableCardProps) {
             paddingRight: '0.5rem',
           }}
         >
-          Qty:{' '}
+          {b3Lang('global.searchProduct.qty')}:{' '}
         </Typography>
         <span>{products.qty}</span>
       </Box>
@@ -61,7 +64,7 @@ function BulkUploadTableCard(props: BulkUploadTableCardProps) {
                 paddingRight: '0.5rem',
               }}
             >
-              Row:{' '}
+              {b3Lang('global.bulkUpload.row')}:{' '}
             </Typography>
             <span>{products.row + 1}</span>
           </Box>
@@ -74,7 +77,7 @@ function BulkUploadTableCard(props: BulkUploadTableCardProps) {
                 paddingRight: '0.5rem',
               }}
             >
-              Error:{' '}
+              {b3Lang('global.bulkUpload.error')}:{' '}
             </Typography>
             <span>{products.error}</span>
           </Box>

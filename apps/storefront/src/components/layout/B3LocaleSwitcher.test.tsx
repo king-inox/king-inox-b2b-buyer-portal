@@ -127,3 +127,30 @@ describe('when the flag is enabled and multiple locales are available', () => {
     expect(location.href).toBe('https://store.example.com/fr#/orders');
   });
 });
+
+describe('proxy languages', () => {
+  afterEach(() => {
+    document.querySelector('#proxy-language-test')?.remove();
+    vi.unstubAllGlobals();
+  });
+
+  it('shows the active proxy language alongside native locales', () => {
+    vi.stubGlobal('location', {
+      href: 'https://store.example.com/pt/cart.php#/orders',
+      origin: 'https://store.example.com',
+      hash: '#/orders',
+    });
+    const menu = document.createElement('nav');
+    menu.id = 'proxy-language-test';
+    const link = document.createElement('a');
+    link.dataset.proxyLanguageLink = '';
+    link.dataset.languageCode = 'pt';
+    link.href = 'https://store.example.com/pt/cart.php';
+    menu.append(link);
+    document.body.append(menu);
+
+    renderWithProviders(<B3LocaleSwitcher />, { preloadedState: withFlagEnabled });
+
+    expect(screen.getByRole('button', { name: /PT/i })).toBeInTheDocument();
+  });
+});

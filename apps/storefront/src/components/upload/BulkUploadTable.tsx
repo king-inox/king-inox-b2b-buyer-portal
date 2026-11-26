@@ -225,7 +225,7 @@ function BulkUploadTable(props: BulkUploadTableProps) {
               fontSize: '14px',
             }}
           >
-            Remove
+            {b3Lang('global.bulkUpload.remove')}
           </MenuItem>
         </Menu>
       </Box>
@@ -240,7 +240,11 @@ function BulkUploadTable(props: BulkUploadTableProps) {
         }}
       >
         <Box>
-          <Tabs value={activeTab} onChange={handleChangeTab} aria-label="basic tabs example">
+          <Tabs
+            value={activeTab}
+            onChange={handleChangeTab}
+            aria-label={b3Lang('global.controls.uploadResults')}
+          >
             {errorProduct.length > 0 && (
               <Tab
                 value="error"

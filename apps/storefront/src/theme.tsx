@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import * as materialMultiLanguages from '@mui/material/locale';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+import sq from './lib/lang/locales/sq.json';
 import { BROWSER_LANG } from './constants';
 
 type LangMapType = {
@@ -10,6 +11,23 @@ type LangMapType = {
 
 const MUI_LANG_MAP: LangMapType = {
   en: 'enUS',
+  ar: 'arSD',
+  cs: 'csCZ',
+  da: 'daDK',
+  el: 'elGR',
+  fi: 'fiFI',
+  hr: 'hrHR',
+  hu: 'huHU',
+  pl: 'plPL',
+  pt: 'ptPT',
+  ro: 'roRO',
+  ru: 'ruRU',
+  sl: 'slSI',
+  sq: 'sqAL',
+  sv: 'svSE',
+  tr: 'trTR',
+  uk: 'ukUA',
+
   zh: 'zhCN',
   fr: 'frFR',
   nl: 'nlNL',
@@ -41,6 +59,7 @@ function B3ThemeProvider({ children }: Props) {
   const theme = (lang: string) =>
     createTheme(
       {
+        direction: document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr',
         palette: {
           mode: 'light',
           background: {
@@ -441,10 +460,41 @@ function B3ThemeProvider({ children }: Props) {
           },
         },
       },
-      (materialMultiLanguages as MaterialMultiLanguagesType)[MUI_LANG_MAP[lang] || 'enUS'],
+      (
+        {
+          ...materialMultiLanguages,
+          sqAL: {
+            components: {
+              MuiTablePagination: {
+                defaultProps: { labelRowsPerPage: sq['global.pagination.rowsPerPage'] },
+              },
+              MuiAutocomplete: {
+                defaultProps: {
+                  clearText: sq['global.controls.clear'],
+                  closeText: sq['global.dialog.close'],
+                  loadingText: sq['global.controls.loading'],
+                  noOptionsText: sq['global.controls.noOptions'],
+                  openText: sq['global.controls.open'],
+                },
+              },
+              MuiAlert: { defaultProps: { closeText: sq['global.dialog.close'] } },
+            },
+          },
+        } as MaterialMultiLanguagesType
+      )[MUI_LANG_MAP[lang] || 'enUS'],
     );
 
-  return <ThemeProvider theme={theme(BROWSER_LANG)}>{children}</ThemeProvider>;
+  return (
+    <ThemeProvider
+      theme={theme(
+        (document.documentElement.dataset.proxyLanguage ?? document.documentElement.lang).split(
+          '-',
+        )[0] || BROWSER_LANG,
+      )}
+    >
+      {children}
+    </ThemeProvider>
+  );
 }
 
 export default B3ThemeProvider;

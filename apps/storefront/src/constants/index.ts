@@ -1,4 +1,28 @@
-export const SUPPORT_LANGUAGE = ['en', 'zh', 'fr', 'nl', 'de', 'it', 'es'];
+export const SUPPORT_LANGUAGE = [
+  'ar',
+  'cs',
+  'da',
+  'de',
+  'el',
+  'en',
+  'es',
+  'fi',
+  'fr',
+  'hr',
+  'hu',
+  'it',
+  'nl',
+  'pl',
+  'pt',
+  'ro',
+  'ru',
+  'sl',
+  'sq',
+  'sv',
+  'tr',
+  'uk',
+  'zh',
+];
 
 // cspell:disable
 export const FILE_UPLOAD_ACCEPT_TYPE = [

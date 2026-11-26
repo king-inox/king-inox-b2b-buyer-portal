@@ -47,6 +47,7 @@ function Title({ title }: { title: string }) {
 }
 
 function HistoryList({ list }: { list: PaymentsHistoryList[] }) {
+  const b3Lang = useB3Lang();
   return (
     <>
       {list.map((item: PaymentsHistoryList) => {
@@ -72,7 +73,7 @@ function HistoryList({ list }: { list: PaymentsHistoryList[] }) {
                   display: 'flex',
                 }}
               >
-                <Title title="Date received" />
+                <Title title={b3Lang('global.controls.dateReceived')} />
                 <Typography variant="body1">
                   {createdAt ? dateWithLocaleSupport(Number(createdAt)) : '-'}
                 </Typography>
@@ -82,7 +83,7 @@ function HistoryList({ list }: { list: PaymentsHistoryList[] }) {
                   display: 'flex',
                 }}
               >
-                <Title title="Amount" />
+                <Title title={b3Lang('global.controls.amount')} />
                 <Typography variant="body1">
                   {handleGetCorrespondingCurrency(amount.code, Number(amount?.value || 0))}
                 </Typography>
@@ -92,7 +93,7 @@ function HistoryList({ list }: { list: PaymentsHistoryList[] }) {
                   display: 'flex',
                 }}
               >
-                <Title title="Transaction type" />
+                <Title title={b3Lang('payment.transactionType')} />
                 <Typography variant="body1">{transactionType}</Typography>
               </Box>
               <Box
@@ -100,7 +101,7 @@ function HistoryList({ list }: { list: PaymentsHistoryList[] }) {
                   display: 'flex',
                 }}
               >
-                <Title title="Payment type" />
+                <Title title={b3Lang('payment.paymentType')} />
                 <Typography variant="body1">{paymentType}</Typography>
               </Box>
               <Box
@@ -108,7 +109,7 @@ function HistoryList({ list }: { list: PaymentsHistoryList[] }) {
                   display: 'flex',
                 }}
               >
-                <Title title="Reference" />
+                <Title title={b3Lang('payment.reference')} />
                 <Typography variant="body1">{referenceNumber || '–'}</Typography>
               </Box>
             </CardContent>

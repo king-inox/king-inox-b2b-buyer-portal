@@ -419,6 +419,7 @@ const setStorefrontConfig = async (dispatch: DispatchProps) => {
     } = await getActiveBcCurrency();
 
     store.dispatch(setActiveCurrency(edges.find((item: CurrencyNodeProps) => item.node.isActive)));
+    langCode = document.documentElement.dataset.proxyLanguage ?? langCode;
     B3SStorage.set('bcLanguage', langCode);
 
     dispatch({
@@ -458,6 +459,7 @@ const setStorefrontConfig = async (dispatch: DispatchProps) => {
     } = await getActiveBcCurrency();
 
     store.dispatch(setActiveCurrency(edges.find((item: CurrencyNodeProps) => item.node.isActive)));
+    langCode = document.documentElement.dataset.proxyLanguage ?? langCode;
     B3SStorage.set('bcLanguage', langCode);
 
     dispatch({

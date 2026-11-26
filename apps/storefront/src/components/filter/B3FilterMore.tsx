@@ -210,7 +210,7 @@ function B3FilterMore<T, Y>({
           <Box onClick={handleDialogClick}>
             {!isFiltering && (
               <IconButton
-                aria-label="edit"
+                aria-label={b3Lang('global.controls.edit')}
                 size="medium"
                 sx={{
                   color: customColor,
@@ -228,7 +228,7 @@ function B3FilterMore<T, Y>({
             )}
             {isFiltering && (
               <IconButton
-                aria-label="edit"
+                aria-label={b3Lang('global.controls.edit')}
                 size="medium"
                 sx={{
                   color: customColor,
@@ -253,7 +253,7 @@ function B3FilterMore<T, Y>({
           </Box>
           {isFiltering && !isMobile && (
             <Button
-              aria-label="clear-edit"
+              aria-label={b3Lang('global.controls.clearFilters')}
               size="small"
               sx={{
                 marginLeft: '5px',

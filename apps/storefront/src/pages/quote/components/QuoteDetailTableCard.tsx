@@ -146,7 +146,9 @@ function QuoteDetailTableCard(props: QuoteTableCardProps) {
               </Box>
             )}
           </Box>
-          <Typography sx={{ my: 1 }}>Misura: {measure}</Typography>
+          <Typography sx={{ my: 1 }}>
+            {b3Lang('quoteDetail.table.measure')}: {measure}
+          </Typography>
           <Typography variant="body1" color="#616161">
             {notes}
           </Typography>

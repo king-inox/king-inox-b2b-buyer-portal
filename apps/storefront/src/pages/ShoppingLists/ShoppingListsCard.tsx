@@ -193,7 +193,7 @@ function ShoppingListsCard(props: OrderItemCardProps) {
           >
             {!getEditPermissions(shoppingList.status) && isCanEditShoppingList && (
               <IconButton
-                aria-label="edit"
+                aria-label={b3Lang('global.controls.edit')}
                 size="medium"
                 sx={{
                   marginRight: '8px',
@@ -207,7 +207,7 @@ function ShoppingListsCard(props: OrderItemCardProps) {
             )}
 
             <IconButton
-              aria-label="duplicate"
+              aria-label={b3Lang('global.controls.duplicate')}
               size="medium"
               sx={{
                 marginRight: '8px',
@@ -220,7 +220,7 @@ function ShoppingListsCard(props: OrderItemCardProps) {
             </IconButton>
             {shoppingListCanBeDeleted(shoppingList.status) && isCanEditShoppingList && (
               <IconButton
-                aria-label="delete"
+                aria-label={b3Lang('shoppingLists.delete')}
                 size="medium"
                 onClick={() => {
                   onDelete(shoppingList);
