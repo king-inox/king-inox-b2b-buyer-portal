@@ -64,6 +64,7 @@ declare global {
         environment: string;
         disable_logout_button?: boolean;
         cart_url?: string;
+        storefront_token_url?: string;
       };
     };
     catalyst?: {

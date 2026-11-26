@@ -20,6 +20,25 @@ export const getBCGraphqlToken = (data: Partial<ApiTokenConfig>): Promise<string
   if (platform !== 'bigcommerce') {
     return undefined;
   }
+  const tokenUrl = window.B3.setting.storefront_token_url;
+  if (tokenUrl) {
+    const url = new URL(tokenUrl, window.location.origin);
+    if (url.origin !== window.location.origin) {
+      return Promise.reject(new Error('Storefront token endpoint must use the current origin'));
+    }
+    return fetch(url, { method: 'POST', credentials: 'same-origin', cache: 'no-store' }).then(
+      async (response) => {
+        if (!response.ok) {
+          throw new Error(`Storefront token request failed: ${response.status}`);
+        }
+        const result: { token?: string } = await response.json();
+        if (typeof result.token !== 'string' || !result.token) {
+          throw new Error('Storefront token is missing');
+        }
+        return result.token;
+      },
+    );
+  }
   return B3Request.graphqlB2B({
     query: storeFrontToken,
     variables: { storeFrontTokenData: convertObjectOrArrayKeysToCamel(data) },
